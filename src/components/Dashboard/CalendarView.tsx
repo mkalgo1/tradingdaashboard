@@ -72,60 +72,32 @@ export default function CalendarView() {
   return (
     <div className="glass-panel rounded-2xl p-4 sm:p-6 border border-white/5 shadow-xl shadow-black/20">
       {/* Top Header & Navigation */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 bg-white/5 rounded-xl p-1 border border-white/10">
-            <button
-              onClick={prevMonth}
-              className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors text-slate-400 hover:text-white"
-              title="Previous Month"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <span className="text-sm sm:text-base font-bold text-white px-3 font-mono min-w-[140px] text-center">
-              {MONTHS[calendarMonth]} <span className="text-emerald-400">{calendarYear}</span>
-            </span>
-            <button
-              onClick={nextMonth}
-              className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors text-slate-400 hover:text-white"
-              title="Next Month"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="hidden lg:block lg:w-64" />
 
+        {/* Centered Month Navigator */}
+        <div className="flex items-center justify-center gap-1 bg-white/5 rounded-xl p-1 border border-white/10 mx-auto">
           <button
-            onClick={() => jumpToMonth(today.getMonth(), today.getFullYear())}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition-colors"
+            onClick={prevMonth}
+            className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors text-slate-400 hover:text-white"
+            title="Previous Month"
           >
-            <CalendarIcon className="w-3.5 h-3.5 text-[#22c55e]" />
-            <span>Today</span>
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <span className="text-base sm:text-lg font-bold text-white px-4 font-mono min-w-[170px] text-center">
+            {MONTHS[calendarMonth]} <span className="text-emerald-400">{calendarYear}</span>
+          </span>
+          <button
+            onClick={nextMonth}
+            className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors text-slate-400 hover:text-white"
+            title="Next Month"
+          >
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Quick Month Selector Bar (March to Nov 2026) */}
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none">
-          {['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'].map((m, idx) => {
-            const mIndex = idx + 2; // March is month index 2
-            const isSelected = calendarMonth === mIndex && calendarYear === 2026;
-            return (
-              <button
-                key={m}
-                onClick={() => jumpToMonth(mIndex, 2026)}
-                className={`px-2.5 py-1 text-xs rounded-lg font-mono font-medium transition-all ${
-                  isSelected
-                    ? 'bg-[#22c55e] text-black font-bold shadow-[0_0_12px_rgba(34,197,94,0.4)]'
-                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                {m}
-              </button>
-            );
-          })}
-        </div>
-
         {/* Month Summary Bar */}
-        <div className="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-xl border border-white/10 text-xs font-mono">
+        <div className="flex items-center justify-center sm:justify-end gap-4 bg-white/5 px-4 py-2 rounded-xl border border-white/10 text-xs font-mono">
           <div>
             <span className="text-slate-500 uppercase tracking-wider text-[10px] block">Month Net</span>
             <span
