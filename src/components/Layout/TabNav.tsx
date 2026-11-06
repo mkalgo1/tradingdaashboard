@@ -5,7 +5,6 @@ import { TabType } from '../../types';
 
 const PRIMARY_TABS: { id: TabType; label: string; icon: React.ElementType }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'trade-entry', label: 'Journal', icon: BookOpen },
   { id: 'payouts', label: 'Payouts', icon: DollarSign },
   { id: 'achievements', label: 'Achievements', icon: Trophy },
 ];

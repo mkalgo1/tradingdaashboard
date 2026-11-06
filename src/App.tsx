@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { BookOpen, ArrowLeft } from 'lucide-react';
 import { AppProvider, useApp } from './context/AppContext';
 import Header from './components/Layout/Header';
 import TabNav from './components/Layout/TabNav';
@@ -9,8 +11,43 @@ import PayoutsTab from './components/Payouts/PayoutsTab';
 import AchievementsTab from './components/Achievements/AchievementsTab';
 import SmoothScroll from './components/ui/SmoothScroll';
 
+function checkIsJournal() {
+  if (typeof window === 'undefined') return false;
+  const path = window.location.pathname.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+  const search = new URLSearchParams(window.location.search);
+  return (
+    path.startsWith('/journal') ||
+    hash.startsWith('#/journal') ||
+    hash === '#journal' ||
+    search.get('page') === 'journal' ||
+    search.get('route') === 'journal'
+  );
+}
+
 function AppContent() {
-  const { state } = useApp();
+  const { state, dispatch } = useApp();
+  const [isJournal, setIsJournal] = useState(checkIsJournal);
+
+  useEffect(() => {
+    function handleLocation() {
+      setIsJournal(checkIsJournal());
+    }
+    window.addEventListener('popstate', handleLocation);
+    window.addEventListener('hashchange', handleLocation);
+    return () => {
+      window.removeEventListener('popstate', handleLocation);
+      window.removeEventListener('hashchange', handleLocation);
+    };
+  }, []);
+
+  function navigateTo(path: string) {
+    window.history.pushState({}, '', path);
+    setIsJournal(checkIsJournal());
+    if (path === '/' || path === '') {
+      dispatch({ type: 'SET_ACTIVE_TAB', payload: 'dashboard' });
+    }
+  }
 
   if (state.loading) {
     return (
@@ -33,23 +70,58 @@ function AppContent() {
           <div className="absolute -bottom-40 left-1/3 w-[600px] h-[600px] rounded-full blur-[150px] bg-purple-600/4" />
         </div>
 
-        <Header />
-        <TabNav />
+        {/* Top Header: show "+" action button only on /journal */}
+        <Header showPlusButton={isJournal} />
+
+        {/* If on /journal, show dedicated top sub-bar with Back to Dashboard button */}
+        {isJournal ? (
+          <nav className="border-b border-[#1e293b] bg-[#0b0e14]/90 backdrop-blur-md sticky top-16 z-40">
+            <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between py-2.5">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold font-mono">
+                    <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>/journal</span>
+                  </div>
+                  <span className="text-xs text-slate-400 hidden sm:inline font-mono">
+                    Trade Execution Log &amp; Entry Portal
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => navigateTo('/')}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#121824] hover:bg-[#182234] text-slate-200 hover:text-white border border-[#1e293b] text-xs font-mono transition-colors shadow-sm"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5 text-[#10b981]" />
+                  <span>Back to Dashboard</span>
+                </button>
+              </div>
+            </div>
+          </nav>
+        ) : (
+          /* Clean viewing dashboard navigation (Dashboard, Payouts, Achievements) */
+          <TabNav />
+        )}
 
         <main className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <AnimatePresence mode="wait">
             <motion.div
-              key={state.activeTab}
+              key={isJournal ? 'journal-view' : state.activeTab}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.22, ease: 'easeOut' }}
             >
-              {state.activeTab === 'dashboard' && <Dashboard />}
-              {state.activeTab === 'accounts' && <AccountsTab />}
-              {state.activeTab === 'trade-entry' && <TradeEntryTab />}
-              {state.activeTab === 'payouts' && <PayoutsTab />}
-              {state.activeTab === 'achievements' && <AchievementsTab />}
+              {isJournal ? (
+                state.activeTab === 'accounts' ? <AccountsTab /> : <TradeEntryTab />
+              ) : (
+                <>
+                  {state.activeTab === 'dashboard' && <Dashboard />}
+                  {state.activeTab === 'payouts' && <PayoutsTab />}
+                  {state.activeTab === 'achievements' && <AchievementsTab />}
+                  {state.activeTab === 'accounts' && <AccountsTab />}
+                </>
+              )}
             </motion.div>
           </AnimatePresence>
         </main>

@@ -100,51 +100,33 @@ export default function EquityCurve() {
 
   return (
     <div className="bg-[#121824] rounded-2xl p-4 sm:p-6 border border-[#1e293b] shadow-xl shadow-black/30">
-      {/* Header and Quick Stats */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-[#10b981]" />
-              Account Equity Curve
-            </h3>
-            <span className="px-2 py-0.5 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 text-[10px] font-mono font-bold">
-              +{returnPct.toFixed(1)}% Return
-            </span>
+      {/* Legend & Filter Controls */}
+      <div className="flex flex-wrap items-center justify-between sm:justify-end gap-4 mb-5 text-xs font-mono">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full bg-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+            <span className="text-slate-300">Equity</span>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
-            TradeZella trailing drawdown tracking &amp; cumulative P&amp;L curve
-          </p>
+          <div className="flex items-center gap-1.5">
+            <span className="w-4 h-0.5 bg-amber-400" />
+            <span className="text-slate-400">Drawdown Floor</span>
+          </div>
         </div>
 
-        {/* Legend & Filter Controls */}
-        <div className="flex flex-wrap items-center gap-4 text-xs font-mono">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
-              <span className="text-slate-300">Equity</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-4 h-0.5 bg-amber-400" />
-              <span className="text-slate-400">Drawdown Floor</span>
-            </div>
-          </div>
-
-          <div className="flex items-center bg-[#0b0e14]/80 p-1 rounded-xl border border-[#1e293b]">
-            {(['all', '90d', '30d'] as const).map((rng) => (
-              <button
-                key={rng}
-                onClick={() => setFilterRange(rng)}
-                className={`px-2.5 py-1 rounded-lg uppercase text-[10px] font-semibold transition-colors ${
-                  filterRange === rng
-                    ? 'bg-[#10b981] text-[#0b0e14] font-bold shadow-[0_0_10px_rgba(16,185,129,0.3)]'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                {rng}
-              </button>
-            ))}
-          </div>
+        <div className="flex items-center bg-[#0b0e14]/80 p-1 rounded-xl border border-[#1e293b]">
+          {(['all', '90d', '30d'] as const).map((rng) => (
+            <button
+              key={rng}
+              onClick={() => setFilterRange(rng)}
+              className={`px-2.5 py-1 rounded-lg uppercase text-[10px] font-semibold transition-colors ${
+                filterRange === rng
+                  ? 'bg-[#10b981] text-[#0b0e14] font-bold shadow-[0_0_10px_rgba(16,185,129,0.3)]'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              {rng}
+            </button>
+          ))}
         </div>
       </div>
 

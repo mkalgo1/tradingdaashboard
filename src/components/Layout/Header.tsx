@@ -21,7 +21,11 @@ import { Payout } from '../../types';
 
 const today = new Date().toISOString().split('T')[0];
 
-export default function Header() {
+interface HeaderProps {
+  showPlusButton?: boolean;
+}
+
+export default function Header({ showPlusButton = false }: HeaderProps) {
   const { state, selectedAccount, accountTrades, accountPayouts, refreshPayouts, dispatch } = useApp();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [plusMenuOpen, setPlusMenuOpen] = useState(false);
@@ -216,112 +220,114 @@ export default function Header() {
               </p>
             </div>
 
-            {/* Top-Right: Pure "+" Action Button (Replaces settings gear & "Log Trade" button) */}
-            <div className="relative" ref={plusMenuRef}>
-              <button
-                onClick={() => setPlusMenuOpen((o) => !o)}
-                className="w-10 h-10 rounded-xl bg-[#10b981] hover:bg-[#059669] text-[#0b0e14] font-extrabold flex items-center justify-center transition-all shadow-[0_0_15px_rgba(16,185,129,0.35)] active:scale-95"
-                title="Actions Menu"
-              >
-                <Plus
-                  className={`w-5 h-5 transition-transform duration-200 ${plusMenuOpen ? 'rotate-45' : ''}`}
-                />
-              </button>
+            {/* Top-Right: "+" Action Button (Only visible on /journal) */}
+            {showPlusButton && (
+              <div className="relative" ref={plusMenuRef}>
+                <button
+                  onClick={() => setPlusMenuOpen((o) => !o)}
+                  className="w-10 h-10 rounded-xl bg-[#10b981] hover:bg-[#059669] text-[#0b0e14] font-extrabold flex items-center justify-center transition-all shadow-[0_0_15px_rgba(16,185,129,0.35)] active:scale-95"
+                  title="Actions Menu"
+                >
+                  <Plus
+                    className={`w-5 h-5 transition-transform duration-200 ${plusMenuOpen ? 'rotate-45' : ''}`}
+                  />
+                </button>
 
-              <AnimatePresence>
-                {plusMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 6, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute top-full right-0 mt-2 w-72 border border-[#1e293b] rounded-2xl overflow-hidden shadow-2xl z-50 p-2 bg-[#121824]"
-                  >
-                    <div className="px-3 py-2 text-[10px] uppercase tracking-wider text-slate-500 font-semibold font-mono border-b border-white/5 mb-1.5">
-                      Quick Operations
-                    </div>
-
-                    {/* 1. Log New Trade */}
-                    <button
-                      onClick={() => {
-                        dispatch({ type: 'SET_ACTIVE_TAB', payload: 'trade-entry' });
-                        setPlusMenuOpen(false);
-                      }}
-                      className={`w-full text-left px-3 py-2.5 rounded-xl text-xs transition-colors flex items-center gap-3 ${
-                        state.activeTab === 'trade-entry'
-                          ? 'bg-[#22c55e]/15 text-white font-semibold border border-[#22c55e]/30'
-                          : 'text-slate-300 hover:bg-white/5'
-                      }`}
+                <AnimatePresence>
+                  {plusMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full right-0 mt-2 w-72 border border-[#1e293b] rounded-2xl overflow-hidden shadow-2xl z-50 p-2 bg-[#121824]"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-[#22c55e]/15 border border-[#22c55e]/30 flex items-center justify-center text-[#22c55e]">
-                        <BookOpen className="w-4 h-4" />
+                      <div className="px-3 py-2 text-[10px] uppercase tracking-wider text-slate-500 font-semibold font-mono border-b border-white/5 mb-1.5">
+                        Quick Operations
                       </div>
-                      <div className="flex-1">
-                        <div className="font-semibold text-white">Log Trade</div>
-                        <div className="text-[10px] text-slate-400">Add session futures trade</div>
-                      </div>
-                    </button>
 
-                    {/* 2. Request Payout */}
-                    <button
-                      onClick={() => {
-                        setShowRequestPayoutModal(true);
-                        setPlusMenuOpen(false);
-                      }}
-                      className="w-full text-left px-3 py-2.5 rounded-xl text-xs transition-colors flex items-center gap-3 text-slate-300 hover:bg-white/5 mt-1"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                        <DollarSign className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold text-white">Request Payout</div>
-                        <div className="text-[10px] text-slate-400">Submit new profit distribution</div>
-                      </div>
-                    </button>
+                      {/* 1. Log New Trade */}
+                      <button
+                        onClick={() => {
+                          dispatch({ type: 'SET_ACTIVE_TAB', payload: 'trade-entry' });
+                          setPlusMenuOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-2.5 rounded-xl text-xs transition-colors flex items-center gap-3 ${
+                          state.activeTab === 'trade-entry'
+                            ? 'bg-[#22c55e]/15 text-white font-semibold border border-[#22c55e]/30'
+                            : 'text-slate-300 hover:bg-white/5'
+                        }`}
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-[#22c55e]/15 border border-[#22c55e]/30 flex items-center justify-center text-[#22c55e]">
+                          <BookOpen className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-white">Log Trade</div>
+                          <div className="text-[10px] text-slate-400">Add session futures trade</div>
+                        </div>
+                      </button>
 
-                    {/* 3. Manage Payout Status */}
-                    <button
-                      onClick={() => {
-                        setShowManagePayoutsModal(true);
-                        setPlusMenuOpen(false);
-                      }}
-                      className="w-full text-left px-3 py-2.5 rounded-xl text-xs transition-colors flex items-center gap-3 text-slate-300 hover:bg-white/5 mt-1"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                        <Clock className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold text-white">Payout Status & Management</div>
-                        <div className="text-[10px] text-slate-400">Approve or update payout status</div>
-                      </div>
-                    </button>
+                      {/* 2. Request Payout */}
+                      <button
+                        onClick={() => {
+                          setShowRequestPayoutModal(true);
+                          setPlusMenuOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2.5 rounded-xl text-xs transition-colors flex items-center gap-3 text-slate-300 hover:bg-white/5 mt-1"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                          <DollarSign className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-white">Request Payout</div>
+                          <div className="text-[10px] text-slate-400">Submit new profit distribution</div>
+                        </div>
+                      </button>
 
-                    <div className="h-px bg-white/5 my-1.5" />
+                      {/* 3. Manage Payout Status */}
+                      <button
+                        onClick={() => {
+                          setShowManagePayoutsModal(true);
+                          setPlusMenuOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2.5 rounded-xl text-xs transition-colors flex items-center gap-3 text-slate-300 hover:bg-white/5 mt-1"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                          <Clock className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-white">Payout Status & Management</div>
+                          <div className="text-[10px] text-slate-400">Approve or update payout status</div>
+                        </div>
+                      </button>
 
-                    {/* 4. Trading Accounts */}
-                    <button
-                      onClick={() => {
-                        dispatch({ type: 'SET_ACTIVE_TAB', payload: 'accounts' });
-                        setPlusMenuOpen(false);
-                      }}
-                      className={`w-full text-left px-3 py-2.5 rounded-xl text-xs transition-colors flex items-center gap-3 ${
-                        state.activeTab === 'accounts'
-                          ? 'bg-[#22c55e]/15 text-white font-semibold border border-[#22c55e]/30'
-                          : 'text-slate-300 hover:bg-white/5'
-                      }`}
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-slate-500/15 border border-slate-500/30 flex items-center justify-center text-slate-300">
-                        <Wallet className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold text-white">Trading Accounts</div>
-                        <div className="text-[10px] text-slate-400">Balance & drawdown limits</div>
-                      </div>
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                      <div className="h-px bg-white/5 my-1.5" />
+
+                      {/* 4. Trading Accounts */}
+                      <button
+                        onClick={() => {
+                          dispatch({ type: 'SET_ACTIVE_TAB', payload: 'accounts' });
+                          setPlusMenuOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-2.5 rounded-xl text-xs transition-colors flex items-center gap-3 ${
+                          state.activeTab === 'accounts'
+                            ? 'bg-[#22c55e]/15 text-white font-semibold border border-[#22c55e]/30'
+                            : 'text-slate-300 hover:bg-white/5'
+                        }`}
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-slate-500/15 border border-slate-500/30 flex items-center justify-center text-slate-300">
+                          <Wallet className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-white">Trading Accounts</div>
+                          <div className="text-[10px] text-slate-400">Balance & drawdown limits</div>
+                        </div>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </div>
       </div>
