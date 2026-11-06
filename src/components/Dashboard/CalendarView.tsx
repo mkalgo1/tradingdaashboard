@@ -70,9 +70,9 @@ export default function CalendarView() {
   }
 
   return (
-    <div className="bg-[#121824] rounded-2xl p-4 sm:p-6 border border-[#1e293b] shadow-xl shadow-black/30">
+    <div className="bg-[#121824] rounded-2xl p-3 sm:p-6 border border-[#1e293b] shadow-xl shadow-black/30">
       {/* Top Header & Navigation */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
         <div className="hidden lg:block lg:w-64" />
 
         {/* Centered Month Navigator */}
@@ -84,7 +84,7 @@ export default function CalendarView() {
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="text-base sm:text-lg font-bold text-white px-4 font-mono min-w-[170px] text-center">
+          <span className="text-sm sm:text-lg font-bold text-white px-3 sm:px-4 font-mono min-w-[150px] sm:min-w-[170px] text-center">
             {MONTHS[calendarMonth]} <span className="text-[#10b981]">{calendarYear}</span>
           </span>
           <button
@@ -97,37 +97,43 @@ export default function CalendarView() {
         </div>
 
         {/* Month Summary Bar */}
-        <div className="flex items-center justify-center sm:justify-end gap-4 bg-[#0b0e14]/80 px-4 py-2 rounded-xl border border-[#1e293b] text-xs font-mono shadow-sm">
+        <div className="flex items-center justify-around sm:justify-end gap-2 sm:gap-4 bg-[#0b0e14]/80 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-[#1e293b] text-xs font-mono shadow-sm w-full sm:w-auto">
           <div>
-            <span className="text-slate-500 uppercase tracking-wider text-[10px] block">Month Net</span>
+            <span className="text-slate-500 uppercase tracking-wider text-[9px] sm:text-[10px] block">Month Net</span>
             <span
-              className={`font-bold text-sm ${
+              className={`font-bold text-xs sm:text-sm ${
                 monthStats.pnl >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'
               }`}
             >
               {monthStats.pnl >= 0 ? '+' : ''}{formatCurrency(monthStats.pnl)}
             </span>
           </div>
-          <div className="w-px h-6 bg-[#1e293b]" />
+          <div className="w-px h-5 sm:h-6 bg-[#1e293b]" />
           <div>
-            <span className="text-slate-500 uppercase tracking-wider text-[10px] block">Win Rate</span>
-            <span className="font-bold text-sm text-white">
+            <span className="text-slate-500 uppercase tracking-wider text-[9px] sm:text-[10px] block">Win Rate</span>
+            <span className="font-bold text-xs sm:text-sm text-white">
               {monthStats.winRate.toFixed(1)}%
             </span>
           </div>
-          <div className="w-px h-6 bg-[#1e293b]" />
+          <div className="w-px h-5 sm:h-6 bg-[#1e293b]" />
           <div>
-            <span className="text-slate-500 uppercase tracking-wider text-[10px] block">Trades</span>
-            <span className="font-bold text-sm text-slate-300">
+            <span className="text-slate-500 uppercase tracking-wider text-[9px] sm:text-[10px] block">Trades</span>
+            <span className="font-bold text-xs sm:text-sm text-slate-300">
               {monthStats.tradesCount}
             </span>
           </div>
         </div>
       </div>
 
+      {/* Mobile Swipe Notice */}
+      <div className="flex items-center justify-between text-[11px] text-slate-500 font-mono mb-2 sm:hidden px-1">
+        <span>Calendar View</span>
+        <span className="text-[#10b981]/90 font-medium">Swipe horizontally →</span>
+      </div>
+
       {/* Grid */}
-      <div className="overflow-x-auto">
-        <div style={{ minWidth: '700px' }}>
+      <div className="overflow-x-auto pb-2 scrollbar-thin" style={{ overscrollBehaviorX: 'contain', WebkitOverflowScrolling: 'touch' }}>
+        <div style={{ minWidth: '640px' }}>
           {/* Day headers */}
           <div className="grid grid-cols-8 gap-1.5 mb-2">
             {DAYS.map((d) => (
@@ -283,7 +289,7 @@ export default function CalendarView() {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
               onClick={(e) => e.stopPropagation()}
-              className="glass-panel w-full max-w-lg rounded-2xl border border-white/10 p-6 shadow-2xl relative bg-[#121217]"
+              className="glass-panel w-full max-w-lg rounded-2xl border border-white/10 p-5 sm:p-6 shadow-2xl relative bg-[#121824] max-h-[85vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between pb-4 border-b border-white/10">
                 <div>

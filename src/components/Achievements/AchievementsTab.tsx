@@ -92,7 +92,7 @@ export default function AchievementsTab() {
           <h3 className="text-sm font-bold text-white mb-4">New Achievement</h3>
           {error && <p className="text-[#ef4444] text-xs mb-3">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="field-label">Achievement Name *</label>
                 <input

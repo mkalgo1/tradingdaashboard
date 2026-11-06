@@ -74,12 +74,12 @@ export default function KPICards() {
       className="space-y-4"
     >
       {/* Primary KPI Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
         {/* Total P&L */}
         <motion.div
           variants={cardVariants}
           whileHover={{ y: -2, transition: { duration: 0.15 } }}
-          className="relative overflow-hidden rounded-2xl p-5 flex flex-col justify-between bg-[#121824] border border-[#1e293b] hover:border-emerald-500/30 transition-all shadow-lg shadow-black/30"
+          className="relative overflow-hidden rounded-2xl p-4 sm:p-5 flex flex-col justify-between bg-[#121824] border border-[#1e293b] hover:border-emerald-500/30 transition-all shadow-lg shadow-black/30"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-400 font-mono uppercase tracking-widest">Total Net P&L</span>
@@ -111,7 +111,7 @@ export default function KPICards() {
         <motion.div
           variants={cardVariants}
           whileHover={{ y: -2, transition: { duration: 0.15 } }}
-          className="relative rounded-2xl p-5 flex flex-col items-center justify-between bg-[#121824] border border-[#1e293b] hover:border-emerald-500/30 transition-all shadow-lg shadow-black/30"
+          className="relative rounded-2xl p-4 sm:p-5 flex flex-col items-center justify-between bg-[#121824] border border-[#1e293b] hover:border-emerald-500/30 transition-all shadow-lg shadow-black/30"
         >
           <div className="flex items-center justify-between w-full">
             <span className="text-xs text-slate-400 font-mono uppercase tracking-widest">Trade Win %</span>
@@ -136,7 +136,7 @@ export default function KPICards() {
         <motion.div
           variants={cardVariants}
           whileHover={{ y: -2, transition: { duration: 0.15 } }}
-          className="relative rounded-2xl p-5 flex flex-col justify-between bg-[#121824] border border-[#1e293b] hover:border-emerald-500/30 transition-all shadow-lg shadow-black/30"
+          className="relative rounded-2xl p-4 sm:p-5 flex flex-col justify-between bg-[#121824] border border-[#1e293b] hover:border-emerald-500/30 transition-all shadow-lg shadow-black/30"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-400 font-mono uppercase tracking-widest">Avg Win / Loss</span>
@@ -171,7 +171,7 @@ export default function KPICards() {
         <motion.div
           variants={cardVariants}
           whileHover={{ y: -2, transition: { duration: 0.15 } }}
-          className="relative rounded-2xl p-5 flex flex-col justify-between bg-[#121824] border border-[#1e293b] hover:border-indigo-500/30 transition-all shadow-lg shadow-black/30"
+          className="relative rounded-2xl p-4 sm:p-5 flex flex-col justify-between bg-[#121824] border border-[#1e293b] hover:border-indigo-500/30 transition-all shadow-lg shadow-black/30"
         >
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-1.5">
@@ -236,7 +236,7 @@ export default function KPICards() {
         <motion.div
           variants={cardVariants}
           whileHover={{ y: -2, transition: { duration: 0.15 } }}
-          className="relative rounded-2xl p-5 flex flex-col justify-between bg-[#121824] border border-[#1e293b] hover:border-emerald-500/30 transition-all shadow-lg shadow-black/30"
+          className="relative rounded-2xl p-4 sm:p-5 flex flex-col justify-between bg-[#121824] border border-[#1e293b] hover:border-emerald-500/30 transition-all shadow-lg shadow-black/30"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-400 font-mono uppercase tracking-widest">Profit Factor</span>
@@ -294,7 +294,7 @@ export default function KPICards() {
         <motion.div
           variants={cardVariants}
           whileHover={{ y: -2, transition: { duration: 0.15 } }}
-          className="relative rounded-2xl p-5 flex flex-col justify-between bg-[#121824] border border-[#1e293b] hover:border-emerald-500/30 transition-all shadow-lg shadow-black/30"
+          className="relative rounded-2xl p-4 sm:p-5 flex flex-col justify-between bg-[#121824] border border-[#1e293b] hover:border-emerald-500/30 transition-all shadow-lg shadow-black/30"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-400 font-mono uppercase tracking-widest">Expectancy / Trade</span>

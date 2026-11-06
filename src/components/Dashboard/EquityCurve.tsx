@@ -165,52 +165,54 @@ export default function EquityCurve() {
           <span>No trade data available</span>
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={290}>
-          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 5 }}>
-            <defs>
-              <linearGradient id="equityGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10b981" stopOpacity={0.35} />
-                <stop offset="60%" stopColor="#10b981" stopOpacity={0.06} />
-                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickFormatter={formatXAxis}
-              tick={{ fill: '#64748b', fontSize: 11, fontFamily: 'monospace' }}
-              axisLine={{ stroke: '#1e293b' }}
-              tickLine={false}
-              interval="preserveStartEnd"
-              minTickGap={25}
-            />
-            <YAxis
-              domain={[yMin, yMax]}
-              tickFormatter={formatYAxis}
-              tick={{ fill: '#64748b', fontSize: 11, fontFamily: 'monospace' }}
-              axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
-              tickLine={false}
-              width={45}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Area
-              type="monotone"
-              dataKey="balance"
-              stroke="#22c55e"
-              strokeWidth={2.5}
-              fill="url(#equityGradient)"
-              activeDot={{ r: 6, fill: '#22c55e', stroke: '#ffffff', strokeWidth: 2 }}
-            />
-            <Line
-              type="stepAfter"
-              dataKey="drawdownLine"
-              stroke="#fbbf24"
-              strokeWidth={1.8}
-              strokeDasharray="4 4"
-              dot={false}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+        <div className="w-full h-[240px] sm:h-[290px] min-w-0">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -5, bottom: 5 }}>
+              <defs>
+                <linearGradient id="equityGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.35} />
+                  <stop offset="60%" stopColor="#10b981" stopOpacity={0.06} />
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickFormatter={formatXAxis}
+                tick={{ fill: '#64748b', fontSize: 10, fontFamily: 'monospace' }}
+                axisLine={{ stroke: '#1e293b' }}
+                tickLine={false}
+                interval="preserveStartEnd"
+                minTickGap={25}
+              />
+              <YAxis
+                domain={[yMin, yMax]}
+                tickFormatter={formatYAxis}
+                tick={{ fill: '#64748b', fontSize: 10, fontFamily: 'monospace' }}
+                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                tickLine={false}
+                width={42}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Area
+                type="monotone"
+                dataKey="balance"
+                stroke="#22c55e"
+                strokeWidth={2.5}
+                fill="url(#equityGradient)"
+                activeDot={{ r: 5, fill: '#22c55e', stroke: '#ffffff', strokeWidth: 2 }}
+              />
+              <Line
+                type="stepAfter"
+                dataKey="drawdownLine"
+                stroke="#fbbf24"
+                strokeWidth={1.8}
+                strokeDasharray="4 4"
+                dot={false}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       )}
     </div>
   );

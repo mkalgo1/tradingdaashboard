@@ -62,7 +62,7 @@ function AppContent() {
 
   return (
     <SmoothScroll>
-      <div className="min-h-screen text-slate-100 relative bg-[#0b0e14] selection:bg-indigo-500/30 selection:text-white">
+      <div className="min-h-screen text-slate-100 relative bg-[#0b0e14] selection:bg-indigo-500/30 selection:text-white overflow-x-hidden w-full max-w-full">
         {/* TradeZella Ambient Atmospheric Glows */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
           <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full blur-[150px] bg-indigo-600/5" />

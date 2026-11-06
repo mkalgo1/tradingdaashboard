@@ -22,9 +22,9 @@ export default function PayoutsTab() {
   return (
     <div className="space-y-6">
       {/* Institutional Treasury Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Received */}
-        <div className="relative rounded-2xl p-5 bg-[#121824] border border-[#1e293b] shadow-xl shadow-black/30 flex flex-col justify-between">
+        <div className="relative rounded-2xl p-4 sm:p-5 bg-[#121824] border border-[#1e293b] shadow-xl shadow-black/30 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[10px] text-slate-400 font-mono uppercase tracking-widest">Total Paid Out</span>
             <div className="w-7 h-7 rounded-lg bg-[#10b981]/10 border border-[#10b981]/20 flex items-center justify-center">
@@ -46,7 +46,7 @@ export default function PayoutsTab() {
         </div>
 
         {/* Total Requested */}
-        <div className="relative rounded-2xl p-5 bg-[#121824] border border-[#1e293b] shadow-xl shadow-black/30 flex flex-col justify-between">
+        <div className="relative rounded-2xl p-4 sm:p-5 bg-[#121824] border border-[#1e293b] shadow-xl shadow-black/30 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[10px] text-slate-400 font-mono uppercase tracking-widest">Gross Requested</span>
             <div className="w-7 h-7 rounded-lg bg-white/5 border border-[#1e293b] flex items-center justify-center">
@@ -65,7 +65,7 @@ export default function PayoutsTab() {
         </div>
 
         {/* Pending Payout */}
-        <div className="relative rounded-2xl p-5 bg-[#121824] border border-[#1e293b] shadow-xl shadow-black/30 flex flex-col justify-between">
+        <div className="relative rounded-2xl p-4 sm:p-5 bg-[#121824] border border-[#1e293b] shadow-xl shadow-black/30 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[10px] text-slate-400 font-mono uppercase tracking-widest">Pending Processing</span>
             <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
@@ -87,7 +87,7 @@ export default function PayoutsTab() {
         </div>
 
         {/* Average Bi-Weekly Payout */}
-        <div className="relative rounded-2xl p-5 bg-[#121824] border border-[#1e293b] shadow-xl shadow-black/30 flex flex-col justify-between">
+        <div className="relative rounded-2xl p-4 sm:p-5 bg-[#121824] border border-[#1e293b] shadow-xl shadow-black/30 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[10px] text-slate-400 font-mono uppercase tracking-widest">Avg 2-Week Payout</span>
             <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
@@ -108,7 +108,7 @@ export default function PayoutsTab() {
 
       {/* Payouts Table (View Only) */}
       <div className="bg-[#121824] rounded-2xl overflow-hidden border border-[#1e293b] shadow-xl shadow-black/30">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" style={{ overscrollBehaviorX: 'contain', WebkitOverflowScrolling: 'touch' }}>
           <table className="w-full text-sm font-mono">
             <thead>
               <tr className="border-b border-[#1e293b] bg-[#0b0e14]/60">

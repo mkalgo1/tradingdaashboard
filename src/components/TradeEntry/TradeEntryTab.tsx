@@ -417,7 +417,7 @@ export default function TradeEntryTab() {
             No trades match the selected criteria.
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" style={{ overscrollBehaviorX: 'contain', WebkitOverflowScrolling: 'touch' }}>
             <table className="w-full text-sm font-mono">
               <thead>
                 <tr className="border-b border-[#1e293b] bg-[#0b0e14]/60">
