@@ -14,10 +14,10 @@ function AppContent() {
 
   if (state.loading) {
     return (
-      <div className="min-h-screen bg-[#09090b] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0b0e14] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-2 border-[#22c55e]/20 border-t-[#22c55e] rounded-full animate-spin shadow-[0_0_20px_rgba(34,197,94,0.3)]" />
-          <p className="text-slate-400 font-mono text-xs tracking-wider uppercase">Loading institutional journal...</p>
+          <div className="w-12 h-12 border-2 border-emerald-500/20 border-t-[#10b981] rounded-full animate-spin shadow-[0_0_20px_rgba(16,185,129,0.3)]" />
+          <p className="text-slate-400 font-mono text-xs tracking-wider uppercase">Loading TradeZella Journal...</p>
         </div>
       </div>
     );
@@ -25,12 +25,12 @@ function AppContent() {
 
   return (
     <SmoothScroll>
-      <div className={`min-h-screen text-white relative selection:bg-[#22c55e]/30 selection:text-white ${state.theme === 'dark' ? 'bg-[#09090b]' : 'bg-slate-100'}`}>
-        {/* Ambient Glows */}
+      <div className="min-h-screen text-slate-100 relative bg-[#0b0e14] selection:bg-indigo-500/30 selection:text-white">
+        {/* TradeZella Ambient Atmospheric Glows */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-          <div className={`absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full blur-[140px] ${state.theme === 'dark' ? 'bg-[#22c55e]/5' : 'bg-[#22c55e]/15'}`} />
-          <div className={`absolute top-1/3 -right-40 w-[600px] h-[600px] rounded-full blur-[160px] ${state.theme === 'dark' ? 'bg-emerald-600/4' : 'bg-[#22c55e]/10'}`} />
-          <div className={`absolute -bottom-40 left-1/3 w-[500px] h-[500px] rounded-full blur-[140px] ${state.theme === 'dark' ? 'bg-[#22c55e]/3' : 'bg-[#22c55e]/8'}`} />
+          <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full blur-[150px] bg-indigo-600/5" />
+          <div className="absolute top-1/4 -right-40 w-[600px] h-[600px] rounded-full blur-[160px] bg-emerald-500/5" />
+          <div className="absolute -bottom-40 left-1/3 w-[600px] h-[600px] rounded-full blur-[150px] bg-purple-600/4" />
         </div>
 
         <Header />

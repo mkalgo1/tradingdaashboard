@@ -99,21 +99,21 @@ export default function EquityCurve() {
   };
 
   return (
-    <div className="glass-panel rounded-2xl p-4 sm:p-6 border border-white/5 shadow-xl shadow-black/20">
+    <div className="bg-[#121824] rounded-2xl p-4 sm:p-6 border border-[#1e293b] shadow-xl shadow-black/30">
       {/* Header and Quick Stats */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-[#22c55e]" />
+              <TrendingUp className="w-4 h-4 text-[#10b981]" />
               Account Equity Curve
             </h3>
-            <span className="px-2 py-0.5 rounded-full bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30 text-[10px] font-mono font-bold">
+            <span className="px-2 py-0.5 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 text-[10px] font-mono font-bold">
               +{returnPct.toFixed(1)}% Return
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
-            Institutional trailing drawdown tracking & growth trajectory
+            TradeZella trailing drawdown tracking &amp; cumulative P&amp;L curve
           </p>
         </div>
 
@@ -121,7 +121,7 @@ export default function EquityCurve() {
         <div className="flex flex-wrap items-center gap-4 text-xs font-mono">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#22c55e] shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+              <span className="w-3 h-3 rounded-full bg-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
               <span className="text-slate-300">Equity</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -130,14 +130,14 @@ export default function EquityCurve() {
             </div>
           </div>
 
-          <div className="flex items-center bg-white/5 p-1 rounded-xl border border-white/10">
+          <div className="flex items-center bg-[#0b0e14]/80 p-1 rounded-xl border border-[#1e293b]">
             {(['all', '90d', '30d'] as const).map((rng) => (
               <button
                 key={rng}
                 onClick={() => setFilterRange(rng)}
                 className={`px-2.5 py-1 rounded-lg uppercase text-[10px] font-semibold transition-colors ${
                   filterRange === rng
-                    ? 'bg-[#22c55e] text-black font-bold'
+                    ? 'bg-[#10b981] text-[#0b0e14] font-bold shadow-[0_0_10px_rgba(16,185,129,0.3)]'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -149,7 +149,7 @@ export default function EquityCurve() {
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 p-3 rounded-xl bg-white/[0.02] border border-white/5 font-mono text-xs">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 p-3 rounded-xl bg-[#0b0e14]/70 border border-[#1e293b] font-mono text-xs">
         <div>
           <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Peak ATH</span>
           <span className="text-white font-bold text-sm sm:text-base">
@@ -158,7 +158,7 @@ export default function EquityCurve() {
         </div>
         <div>
           <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Current Equity</span>
-          <span className="text-[#22c55e] font-bold text-sm sm:text-base">
+          <span className="text-[#10b981] font-bold text-sm sm:text-base">
             {formatCurrency(currentBalance)}
           </span>
         </div>
@@ -170,7 +170,7 @@ export default function EquityCurve() {
         </div>
         <div>
           <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Drawdown Buffer</span>
-          <span className="text-emerald-400 font-bold text-sm sm:text-base">
+          <span className="text-[#10b981] font-bold text-sm sm:text-base">
             +{formatCurrency(cushion)}
           </span>
         </div>
@@ -187,17 +187,17 @@ export default function EquityCurve() {
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 5 }}>
             <defs>
               <linearGradient id="equityGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.4} />
-                <stop offset="60%" stopColor="#22c55e" stopOpacity={0.08} />
-                <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.35} />
+                <stop offset="60%" stopColor="#10b981" stopOpacity={0.06} />
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
             <XAxis
               dataKey="date"
               tickFormatter={formatXAxis}
               tick={{ fill: '#64748b', fontSize: 11, fontFamily: 'monospace' }}
-              axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+              axisLine={{ stroke: '#1e293b' }}
               tickLine={false}
               interval="preserveStartEnd"
               minTickGap={25}

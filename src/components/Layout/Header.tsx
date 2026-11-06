@@ -107,7 +107,7 @@ export default function Header() {
   }
 
   return (
-    <header className="border-b border-white/5 bg-[#09090b]/95 backdrop-blur-xl sticky top-0 z-50">
+    <header className="border-b border-[#1e293b] bg-[#0b0e14]/95 backdrop-blur-xl sticky top-0 z-50">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-3">
           {/* Top-Left: Clean Account Switcher Only (APEX logo removed per user request) */}
@@ -115,9 +115,9 @@ export default function Header() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen((o) => !o)}
-                className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group"
+                className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[#121824] hover:bg-[#182234] border border-[#1e293b] transition-all group shadow-sm"
               >
-                <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e] animate-pulse" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                 <span className="text-amber-400 font-bold text-sm sm:text-base tracking-wide font-mono">
                   {selectedAccount ? selectedAccount.name : 'No Account'}
                 </span>
@@ -135,7 +135,7 @@ export default function Header() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 6, scale: 0.98 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute top-full left-0 mt-2 w-64 glass-panel border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50 p-1 bg-[#121217]"
+                    className="absolute top-full left-0 mt-2 w-64 border border-[#1e293b] rounded-xl overflow-hidden shadow-2xl z-50 p-1.5 bg-[#121824]"
                   >
                     <div className="px-3 py-2 text-[10px] uppercase tracking-wider text-slate-500 font-semibold font-mono">
                       Select Account
@@ -149,14 +149,14 @@ export default function Header() {
                         }}
                         className={`w-full text-left px-3 py-2.5 rounded-lg text-xs transition-colors flex items-center justify-between ${
                           acc.id === state.selectedAccountId
-                            ? 'bg-[#22c55e]/15 text-white font-semibold border border-[#22c55e]/30'
+                            ? 'bg-[#10b981]/15 text-white font-semibold border border-[#10b981]/30'
                             : 'text-slate-300 hover:bg-white/5'
                         }`}
                       >
                         <div className="flex items-center gap-2">
                           <div
                             className={`w-2 h-2 rounded-full ${
-                              acc.id === state.selectedAccountId ? 'bg-[#22c55e]' : 'bg-slate-600'
+                              acc.id === state.selectedAccountId ? 'bg-[#10b981]' : 'bg-slate-600'
                             }`}
                           />
                           <span className="font-mono">{acc.name}</span>
@@ -177,7 +177,7 @@ export default function Header() {
             {/* Account Balance */}
             <div className="text-right hidden sm:block">
               <div className="flex items-center gap-1.5 justify-end">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#22c55e]" />
+                <ShieldCheck className="w-3.5 h-3.5 text-[#10b981]" />
                 <p className="text-[10px] text-slate-400 uppercase tracking-widest font-mono font-medium">Account Balance</p>
               </div>
               <p className="text-base sm:text-lg font-bold font-mono text-white">
@@ -185,21 +185,21 @@ export default function Header() {
               </p>
             </div>
 
-            <div className="w-px h-8 bg-white/10 hidden sm:block" />
+            <div className="w-px h-8 bg-[#1e293b] hidden sm:block" />
 
             {/* Monthly P&L */}
             <div className="text-right">
               <p className="text-[10px] text-slate-400 uppercase tracking-widest font-mono mb-0.5">Month P&L</p>
               <p
                 className={`text-sm sm:text-base font-bold font-mono ${
-                  monthPnL >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'
+                  monthPnL >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'
                 }`}
               >
                 {monthPnL >= 0 ? '+' : ''}{formatCurrency(monthPnL)}
               </p>
             </div>
 
-            <div className="w-px h-8 bg-white/10 hidden md:block" />
+            <div className="w-px h-8 bg-[#1e293b] hidden md:block" />
 
             {/* Today's P&L */}
             <div className="text-right hidden md:block">
@@ -209,7 +209,7 @@ export default function Header() {
               </div>
               <p
                 className={`text-sm sm:text-base font-bold font-mono ${
-                  todayPnL >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'
+                  todayPnL >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'
                 }`}
               >
                 {todayPnL !== 0 ? (todayPnL > 0 ? '+' : '') + formatCurrency(todayPnL) : '$0'}
@@ -220,7 +220,7 @@ export default function Header() {
             <div className="relative" ref={plusMenuRef}>
               <button
                 onClick={() => setPlusMenuOpen((o) => !o)}
-                className="w-10 h-10 rounded-xl bg-[#22c55e] hover:bg-[#16a34a] text-black font-extrabold flex items-center justify-center transition-all shadow-[0_0_15px_rgba(34,197,94,0.35)] active:scale-95"
+                className="w-10 h-10 rounded-xl bg-[#10b981] hover:bg-[#059669] text-[#0b0e14] font-extrabold flex items-center justify-center transition-all shadow-[0_0_15px_rgba(16,185,129,0.35)] active:scale-95"
                 title="Actions Menu"
               >
                 <Plus
@@ -235,7 +235,7 @@ export default function Header() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 6, scale: 0.98 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute top-full right-0 mt-2 w-72 glass-panel border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-50 p-2 bg-[#121217]"
+                    className="absolute top-full right-0 mt-2 w-72 border border-[#1e293b] rounded-2xl overflow-hidden shadow-2xl z-50 p-2 bg-[#121824]"
                   >
                     <div className="px-3 py-2 text-[10px] uppercase tracking-wider text-slate-500 font-semibold font-mono border-b border-white/5 mb-1.5">
                       Quick Operations

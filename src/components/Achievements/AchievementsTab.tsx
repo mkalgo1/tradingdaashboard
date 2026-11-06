@@ -88,7 +88,7 @@ export default function AchievementsTab() {
       </div>
 
       {showForm && (
-        <div className="glass-panel rounded-2xl p-5 border border-white/10">
+        <div className="bg-[#121824] rounded-2xl p-5 border border-[#1e293b] shadow-xl">
           <h3 className="text-sm font-bold text-white mb-4">New Achievement</h3>
           {error && <p className="text-[#ef4444] text-xs mb-3">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -126,7 +126,7 @@ export default function AchievementsTab() {
               />
               {imagePreview ? (
                 <div className="flex items-center gap-3">
-                  <img src={imagePreview} alt="preview" className="w-16 h-16 rounded-lg object-cover border border-white/10" />
+                  <img src={imagePreview} alt="preview" className="w-16 h-16 rounded-lg object-cover border border-[#1e293b]" />
                   <button
                     type="button"
                     onClick={() => { setImageFile(null); setImagePreview(null); if (fileRef.current) fileRef.current.value = ''; }}
@@ -140,7 +140,7 @@ export default function AchievementsTab() {
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-400 text-sm transition-colors"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0b0e14] border border-[#1e293b] hover:bg-[#182234] text-slate-400 text-sm transition-colors"
                 >
                   <Upload className="w-4 h-4" />
                   Upload Image
@@ -163,7 +163,7 @@ export default function AchievementsTab() {
       )}
 
       {accountAchievements.length === 0 ? (
-        <div className="glass-panel rounded-2xl p-12 text-center">
+        <div className="bg-[#121824] rounded-2xl p-12 text-center border border-[#1e293b]">
           <Trophy className="w-10 h-10 text-slate-700 mx-auto mb-3" />
           <p className="text-slate-500 text-sm">No achievements yet. Keep trading and unlock your first milestone!</p>
         </div>
@@ -172,7 +172,7 @@ export default function AchievementsTab() {
           {accountAchievements.map((a: Achievement) => (
             <div
               key={a.id}
-              className="glass-panel rounded-2xl p-4 border border-white/5 hover:border-white/10 transition-colors flex items-center gap-4"
+              className="bg-[#121824] rounded-2xl p-4 border border-[#1e293b] hover:border-emerald-500/30 transition-all shadow-sm flex items-center gap-4"
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
@@ -187,16 +187,16 @@ export default function AchievementsTab() {
                   <img
                     src={a.image_url}
                     alt={a.name}
-                    className="w-14 h-14 rounded-xl object-cover border border-white/10"
+                    className="w-14 h-14 rounded-xl object-cover border border-[#1e293b]"
                   />
                 ) : (
-                  <div className="w-14 h-14 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                  <div className="w-14 h-14 rounded-xl bg-[#0b0e14] border border-[#1e293b] flex items-center justify-center">
                     <Trophy className="w-6 h-6 text-slate-600" />
                   </div>
                 )}
                 <button
                   onClick={() => handleDelete(a)}
-                  className="w-7 h-7 rounded-lg bg-white/3 hover:bg-[#ef4444]/10 flex items-center justify-center text-slate-600 hover:text-[#ef4444] transition-colors"
+                  className="w-7 h-7 rounded-lg bg-white/5 hover:bg-[#ef4444]/10 flex items-center justify-center text-slate-400 hover:text-[#ef4444] transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

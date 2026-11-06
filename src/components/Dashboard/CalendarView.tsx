@@ -70,26 +70,26 @@ export default function CalendarView() {
   }
 
   return (
-    <div className="glass-panel rounded-2xl p-4 sm:p-6 border border-white/5 shadow-xl shadow-black/20">
+    <div className="bg-[#121824] rounded-2xl p-4 sm:p-6 border border-[#1e293b] shadow-xl shadow-black/30">
       {/* Top Header & Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="hidden lg:block lg:w-64" />
 
         {/* Centered Month Navigator */}
-        <div className="flex items-center justify-center gap-1 bg-white/5 rounded-xl p-1 border border-white/10 mx-auto">
+        <div className="flex items-center justify-center gap-1 bg-[#0b0e14]/80 rounded-xl p-1 border border-[#1e293b] mx-auto shadow-inner">
           <button
             onClick={prevMonth}
-            className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors text-slate-400 hover:text-white"
+            className="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center transition-colors text-slate-400 hover:text-white"
             title="Previous Month"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <span className="text-base sm:text-lg font-bold text-white px-4 font-mono min-w-[170px] text-center">
-            {MONTHS[calendarMonth]} <span className="text-emerald-400">{calendarYear}</span>
+            {MONTHS[calendarMonth]} <span className="text-[#10b981]">{calendarYear}</span>
           </span>
           <button
             onClick={nextMonth}
-            className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors text-slate-400 hover:text-white"
+            className="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center transition-colors text-slate-400 hover:text-white"
             title="Next Month"
           >
             <ChevronRight className="w-4 h-4" />
@@ -97,25 +97,25 @@ export default function CalendarView() {
         </div>
 
         {/* Month Summary Bar */}
-        <div className="flex items-center justify-center sm:justify-end gap-4 bg-white/5 px-4 py-2 rounded-xl border border-white/10 text-xs font-mono">
+        <div className="flex items-center justify-center sm:justify-end gap-4 bg-[#0b0e14]/80 px-4 py-2 rounded-xl border border-[#1e293b] text-xs font-mono shadow-sm">
           <div>
             <span className="text-slate-500 uppercase tracking-wider text-[10px] block">Month Net</span>
             <span
               className={`font-bold text-sm ${
-                monthStats.pnl >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'
+                monthStats.pnl >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'
               }`}
             >
               {monthStats.pnl >= 0 ? '+' : ''}{formatCurrency(monthStats.pnl)}
             </span>
           </div>
-          <div className="w-px h-6 bg-white/10" />
+          <div className="w-px h-6 bg-[#1e293b]" />
           <div>
             <span className="text-slate-500 uppercase tracking-wider text-[10px] block">Win Rate</span>
             <span className="font-bold text-sm text-white">
               {monthStats.winRate.toFixed(1)}%
             </span>
           </div>
-          <div className="w-px h-6 bg-white/10" />
+          <div className="w-px h-6 bg-[#1e293b]" />
           <div>
             <span className="text-slate-500 uppercase tracking-wider text-[10px] block">Trades</span>
             <span className="font-bold text-sm text-slate-300">
@@ -174,16 +174,16 @@ export default function CalendarView() {
                       onClick={() => handleDayClick(day)}
                       className={`h-20 rounded-xl flex flex-col justify-between p-2 cursor-pointer transition-all duration-200 relative group overflow-hidden ${
                         isToday
-                          ? 'border-2 border-[#22c55e] bg-[#22c55e]/10 shadow-[0_0_15px_rgba(34,197,94,0.2)]'
+                          ? 'border-2 border-[#10b981] bg-[#10b981]/15 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
                           : pnl !== null
                           ? pnl > 0
-                            ? 'bg-emerald-950/20 border border-emerald-500/30 hover:border-emerald-400 hover:bg-emerald-950/30'
+                            ? 'bg-[#10b981]/[0.08] border border-[#10b981]/25 hover:border-[#10b981]/50 hover:bg-[#10b981]/[0.12]'
                             : pnl < 0
-                            ? 'bg-rose-950/20 border border-rose-500/30 hover:border-rose-400 hover:bg-rose-950/30'
-                            : 'bg-white/5 border border-white/10 hover:bg-white/10'
+                            ? 'bg-[#ef4444]/[0.08] border border-[#ef4444]/25 hover:border-[#ef4444]/50 hover:bg-[#ef4444]/[0.12]'
+                            : 'bg-[#121824] border border-[#1e293b] hover:bg-[#182234]'
                           : isWeekend
-                          ? 'bg-white/[0.02] border border-white/5 opacity-50'
-                          : 'bg-white/5 border border-white/10 hover:bg-white/10'
+                          ? 'bg-[#0b0e14]/50 border border-white/[0.04] opacity-40'
+                          : 'bg-[#121824] border border-[#1e293b] hover:bg-[#182234]'
                       }`}
                     >
                       {/* Day Number and Today Tag */}
@@ -191,7 +191,7 @@ export default function CalendarView() {
                         <span
                           className={`text-xs font-mono font-medium ${
                             isToday
-                              ? 'text-[#22c55e] font-bold'
+                              ? 'text-[#10b981] font-bold'
                               : isWeekend
                               ? 'text-slate-600'
                               : 'text-slate-400'
@@ -200,7 +200,7 @@ export default function CalendarView() {
                           {day}
                         </span>
                         {isToday && (
-                          <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#22c55e] text-black font-bold">
+                          <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#10b981] text-black font-bold">
                             TODAY
                           </span>
                         )}
@@ -213,7 +213,7 @@ export default function CalendarView() {
                             <span
                               className={`text-xs sm:text-sm font-bold font-mono leading-tight block ${
                                 pnl > 0
-                                  ? 'text-[#22c55e]'
+                                  ? 'text-[#10b981]'
                                   : pnl < 0
                                   ? 'text-[#ef4444]'
                                   : 'text-slate-400'
@@ -241,10 +241,10 @@ export default function CalendarView() {
                 <div
                   className={`h-20 rounded-xl flex flex-col items-center justify-center p-2 border transition-all ${
                     weekPnL > 0
-                      ? 'bg-gradient-to-br from-[#22c55e]/15 to-transparent border-[#22c55e]/30 shadow-[0_0_15px_rgba(34,197,94,0.1)]'
+                      ? 'bg-gradient-to-br from-[#10b981]/15 to-[#0b0e14]/60 border-[#10b981]/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
                       : weekPnL < 0
-                      ? 'bg-gradient-to-br from-[#ef4444]/15 to-transparent border-[#ef4444]/30'
-                      : 'bg-white/2 border-white/5'
+                      ? 'bg-gradient-to-br from-[#ef4444]/15 to-[#0b0e14]/60 border-[#ef4444]/30'
+                      : 'bg-[#0b0e14]/50 border-[#1e293b]'
                   }`}
                 >
                   <span className="text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-mono font-medium">
@@ -253,7 +253,7 @@ export default function CalendarView() {
                   <span
                     className={`text-xs sm:text-sm font-extrabold font-mono ${
                       weekPnL > 0
-                        ? 'text-[#22c55e]'
+                        ? 'text-[#10b981]'
                         : weekPnL < 0
                         ? 'text-[#ef4444]'
                         : 'text-slate-500'

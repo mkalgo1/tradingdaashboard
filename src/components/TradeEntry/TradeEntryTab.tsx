@@ -157,15 +157,15 @@ export default function TradeEntryTab() {
       </AnimatePresence>
 
       {/* Form Container */}
-      <div className="glass-panel rounded-2xl p-5 sm:p-6 border border-white/5 shadow-xl shadow-black/20">
+      <div className="bg-[#121824] rounded-2xl p-5 sm:p-6 border border-[#1e293b] shadow-xl shadow-black/30">
         <div className="flex items-center justify-between mb-5">
           <div>
             <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#22c55e]" />
-              Log Futures & Day Trade
+              <Sparkles className="w-4 h-4 text-[#10b981]" />
+              TradeZella Fast Trade Logger
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
-              Add new trades for today or future sessions (syncs automatically to journal & calendar)
+              Log new futures executions (auto-syncs to TradeZella Journal &amp; Calendar)
             </p>
           </div>
         </div>
@@ -193,8 +193,8 @@ export default function TradeEntryTab() {
                 }
                 className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition-all ${
                   form.symbol === fp.symbol
-                    ? 'bg-[#22c55e] text-black font-bold shadow-[0_0_12px_rgba(34,197,94,0.4)]'
-                    : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+                    ? 'bg-[#10b981] text-[#0b0e14] font-bold shadow-[0_0_12px_rgba(16,185,129,0.35)]'
+                    : 'bg-[#0b0e14] text-slate-300 hover:bg-[#182234] border border-[#1e293b]'
                 }`}
               >
                 {fp.symbol} <span className="text-[10px] opacity-70">({fp.name})</span>
@@ -360,8 +360,8 @@ export default function TradeEntryTab() {
       </div>
 
       {/* Trade History Table */}
-      <div className="glass-panel rounded-2xl overflow-hidden border border-white/5 shadow-xl shadow-black/20">
-        <div className="p-4 sm:p-5 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-[#121824] rounded-2xl overflow-hidden border border-[#1e293b] shadow-xl shadow-black/30">
+        <div className="p-4 sm:p-5 border-b border-[#1e293b] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h3 className="text-base font-bold text-white flex items-center gap-2">
               <span>Executed Trade Log</span>
@@ -386,11 +386,11 @@ export default function TradeEntryTab() {
                   setSearchQuery(e.target.value);
                   setPage(1);
                 }}
-                className="pl-9 pr-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#22c55e]"
+                className="pl-9 pr-3 py-1.5 rounded-xl bg-[#0b0e14] border border-[#1e293b] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#10b981]"
               />
             </div>
 
-            <div className="flex items-center bg-white/5 p-1 rounded-xl border border-white/10 text-xs">
+            <div className="flex items-center bg-[#0b0e14] p-1 rounded-xl border border-[#1e293b] text-xs">
               {(['all', 'wins', 'losses'] as const).map((ft) => (
                 <button
                   key={ft}
@@ -400,7 +400,7 @@ export default function TradeEntryTab() {
                   }}
                   className={`px-2.5 py-1 rounded-lg uppercase text-[10px] font-mono font-semibold transition-colors ${
                     filterType === ft
-                      ? 'bg-[#22c55e] text-black font-bold'
+                      ? 'bg-[#10b981] text-[#0b0e14] font-bold shadow-sm'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
@@ -420,7 +420,7 @@ export default function TradeEntryTab() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm font-mono">
               <thead>
-                <tr className="border-b border-white/5 bg-white/[0.02]">
+                <tr className="border-b border-[#1e293b] bg-[#0b0e14]/60">
                   {['Date', 'Symbol', 'Dir', 'Size', 'Fees', 'Net P&L', 'Notes', ''].map((h) => (
                     <th
                       key={h}
@@ -431,9 +431,9 @@ export default function TradeEntryTab() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/[0.03]">
+              <tbody className="divide-y divide-[#1e293b]/60">
                 {paginatedTrades.map((trade: Trade) => (
-                  <tr key={trade.id} className="hover:bg-white/[0.03] transition-colors">
+                  <tr key={trade.id} className="hover:bg-[#182234] transition-colors">
                     <td className="px-4 py-3 text-slate-300 text-xs whitespace-nowrap">
                       {trade.date}
                     </td>
@@ -442,7 +442,7 @@ export default function TradeEntryTab() {
                       <span
                         className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
                           trade.direction === 'long'
-                            ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30'
+                            ? 'bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30'
                             : 'bg-[#ef4444]/15 text-[#ef4444] border border-[#ef4444]/30'
                         }`}
                       >
@@ -458,7 +458,7 @@ export default function TradeEntryTab() {
                     <td className="px-4 py-3 text-slate-400 text-xs">${trade.fees}</td>
                     <td
                       className={`px-4 py-3 font-bold text-xs whitespace-nowrap ${
-                        trade.pnl >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'
+                        trade.pnl >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'
                       }`}
                     >
                       {trade.pnl >= 0 ? '+' : ''}{formatCurrency(trade.pnl)}

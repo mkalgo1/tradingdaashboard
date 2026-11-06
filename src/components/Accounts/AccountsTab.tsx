@@ -147,7 +147,7 @@ export default function AccountsTab() {
       )}
 
       {state.accounts.length === 0 ? (
-        <div className="glass-panel rounded-2xl p-10 text-center text-slate-500 text-sm">
+        <div className="bg-[#121824] rounded-2xl p-10 text-center text-slate-500 text-sm border border-[#1e293b]">
           No accounts yet. Create one to get started.
         </div>
       ) : (
@@ -155,21 +155,21 @@ export default function AccountsTab() {
           {state.accounts.map((acc) => (
             <div
               key={acc.id}
-              className={`glass-panel rounded-2xl p-5 border transition-colors ${
-                acc.id === state.selectedAccountId ? 'border-[#22c55e]/30' : 'border-white/5'
+              className={`bg-[#121824] rounded-2xl p-5 border transition-all ${
+                acc.id === state.selectedAccountId ? 'border-[#10b981]/40 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : 'border-[#1e293b]'
               }`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-2.5 h-2.5 rounded-full mt-1 ${
-                      acc.id === state.selectedAccountId ? 'bg-[#22c55e]' : 'bg-slate-600'
+                      acc.id === state.selectedAccountId ? 'bg-[#10b981]' : 'bg-slate-600'
                     }`}
                   />
                   <div>
                     <h3 className="font-bold text-white">{acc.name}</h3>
                     {acc.id === state.selectedAccountId && (
-                      <span className="text-[10px] text-[#22c55e] font-medium uppercase tracking-wider">Active</span>
+                      <span className="text-[10px] text-[#10b981] font-medium uppercase tracking-wider">Active</span>
                     )}
                   </div>
                 </div>
@@ -178,8 +178,8 @@ export default function AccountsTab() {
                     onClick={() => dispatch({ type: 'SET_SELECTED_ACCOUNT', payload: acc.id })}
                     className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
                       acc.id === state.selectedAccountId
-                        ? 'bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/20'
-                        : 'bg-white/5 text-slate-400 hover:bg-white/10'
+                        ? 'bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 font-bold'
+                        : 'bg-[#0b0e14] text-slate-400 hover:text-white border border-[#1e293b]'
                     }`}
                   >
                     {acc.id === state.selectedAccountId ? 'Selected' : 'Select'}
@@ -198,7 +198,7 @@ export default function AccountsTab() {
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-white/5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-[#1e293b]">
                 <div>
                   <p className="text-xs text-slate-500 mb-0.5">Initial Balance</p>
                   <p className="text-sm font-mono font-bold text-white">{formatCurrency(acc.initial_balance)}</p>
@@ -209,7 +209,7 @@ export default function AccountsTab() {
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 mb-0.5">Profit Target</p>
-                  <p className="text-sm font-mono font-bold text-[#22c55e]">{formatCurrency(acc.profit_target)}</p>
+                  <p className="text-sm font-mono font-bold text-[#10b981]">{formatCurrency(acc.profit_target)}</p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 mb-0.5">Commission</p>
