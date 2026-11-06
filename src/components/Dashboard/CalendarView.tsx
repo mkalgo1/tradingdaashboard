@@ -228,44 +228,37 @@ export default function CalendarView() {
                           {day}
                         </span>
                         {isToday && (
-                          <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#22c55e] text-black font-bold">
+                          <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#22c55e] text-black font-bold">
                             TODAY
-                          </span>
-                        )}
-                        {numTrades !== null && numTrades > 0 && (
-                          <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-white/10 text-slate-300">
-                            {numTrades}T
                           </span>
                         )}
                       </div>
 
-                      {/* Day P&L */}
-                      <div className="my-auto text-center">
+                      {/* Day P&L and small number of trades directly below */}
+                      <div className="my-auto text-center flex flex-col items-center justify-center">
                         {pnl !== null ? (
-                          <span
-                            className={`text-xs sm:text-sm font-extrabold font-mono leading-tight block ${
-                              pnl > 0
-                                ? 'text-[#22c55e]'
-                                : pnl < 0
-                                ? 'text-[#ef4444]'
-                                : 'text-slate-400'
-                            }`}
-                          >
-                            {pnl > 0 ? '+' : ''}{formatCurrency(pnl)}
-                          </span>
+                          <>
+                            <span
+                              className={`text-xs sm:text-sm font-bold font-mono leading-tight block ${
+                                pnl > 0
+                                  ? 'text-[#22c55e]'
+                                  : pnl < 0
+                                  ? 'text-[#ef4444]'
+                                  : 'text-slate-400'
+                              }`}
+                            >
+                              {pnl > 0 ? '+' : ''}{formatCurrency(pnl)}
+                            </span>
+                            {numTrades !== null && numTrades > 0 && (
+                              <span className="text-[10px] text-slate-400 font-mono leading-tight block mt-0.5">
+                                {numTrades}
+                              </span>
+                            )}
+                          </>
                         ) : isWeekend ? (
                           <span className="text-[10px] text-slate-600 font-mono">CLOSED</span>
                         ) : (
                           <span className="text-[10px] text-slate-600 font-mono">--</span>
-                        )}
-                      </div>
-
-                      {/* Sub-indicator */}
-                      <div className="flex items-center justify-between text-[9px] text-slate-500 font-mono">
-                        {pnl !== null && pnl !== 0 && (
-                          <span className={pnl > 0 ? 'text-emerald-500' : 'text-rose-500'}>
-                            {pnl > 0 ? 'WIN' : 'LOSS'}
-                          </span>
                         )}
                       </div>
                     </motion.div>
