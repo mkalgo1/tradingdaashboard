@@ -31,20 +31,58 @@ export function buildTradeData(accountId = 'a51e521a-2a12-42a1-bea8-840bdcb53532
     'Market stalled at major HTF supply, stopped out'
   ];
 
-  const trades = [];
-  let curr = new Date(start);
-  let dayIndex = 0;
-
-  let seed = 998877;
+  let seed = 12993;
   function random() {
     seed = (seed * 1664525 + 1013904223) % 4294967296;
     return seed / 4294967296;
   }
 
-  // 180 total weekdays.
-  // 60 two-trade days, 120 one-trade days = 240 trades.
-  // We want 192 wins (80.0%) and 48 losses (20.0%).
-  // And 144 win days (80.0%) and 36 loss days (20.0%).
+  // 36 weeks total (180 weekdays)
+  // 144 win days, 36 loss days (80.00% day win rate)
+  const weekLosses = [];
+  for (let i = 0; i < 10; i++) weekLosses.push(2);
+  for (let i = 0; i < 16; i++) weekLosses.push(1);
+  for (let i = 0; i < 10; i++) weekLosses.push(0);
+
+  for (let i = weekLosses.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [weekLosses[i], weekLosses[j]] = [weekLosses[j], weekLosses[i]];
+  }
+
+  const lossDaysSet = new Set();
+  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  const lossCountByWeekday = { Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0 };
+
+  for (let w = 0; w < 36; w++) {
+    const lossCount = weekLosses[w];
+    const daysInWeek = [0, 1, 2, 3, 4];
+    for (let i = daysInWeek.length - 1; i > 0; i--) {
+      const j = Math.floor(random() * (i + 1));
+      [daysInWeek[i], daysInWeek[j]] = [daysInWeek[j], daysInWeek[i]];
+    }
+    const picked = daysInWeek.slice(0, lossCount);
+    picked.forEach((d) => {
+      lossDaysSet.add(w * 5 + d);
+      lossCountByWeekday[dayNames[d]]++;
+    });
+  }
+
+  // Pick exactly 12 loss days to have 2 loss trades -> 36 + 12 = 48 losses total (48 / 240 = 20.00% losses -> 80.00% trade win rate!)
+  const lossDaysArray = Array.from(lossDaysSet);
+  const twoTradeLossDays = new Set(lossDaysArray.slice(0, 12));
+
+  // 48 two-trade win days + 12 two-trade loss days = 60 two-trade days total (120 single-trade days + 60 two-trade days = 240 trades total!)
+  const winDaysArray = [];
+  for (let d = 0; d < 180; d++) {
+    if (!lossDaysSet.has(d)) winDaysArray.push(d);
+  }
+  // Pick exactly 48 win days to have 2 win trades
+  const twoTradeWinDays = new Set(winDaysArray.filter((_, idx) => idx % 3 === 0).slice(0, 48));
+
+  const trades = [];
+  let curr = new Date(start);
+  let dayIndex = 0;
+
   while (curr <= end) {
     const dayOfWeek = curr.getDay();
     if (dayOfWeek >= 1 && dayOfWeek <= 5) {
@@ -53,14 +91,10 @@ export function buildTradeData(accountId = 'a51e521a-2a12-42a1-bea8-840bdcb53532
       const dd = String(curr.getDate()).padStart(2, '0');
       const dateStr = `${yyyy}-${mm}-${dd}`;
 
-      // 180 days / 5 = 36 blocks of 5 days.
-      // In each 5-day block (indexes 0, 1, 2, 3, 4):
-      // Day 4 is the loss day (36 loss days out of 180 = exactly 80.0% win days).
-      const isLossDay = (dayIndex % 5 === 4);
-      const isTwoTradeDay = (dayIndex % 3 === 1);
+      const isLossDay = lossDaysSet.has(dayIndex);
+      const isTwoTradeDay = isLossDay ? twoTradeLossDays.has(dayIndex) : twoTradeWinDays.has(dayIndex);
 
       if (isLossDay) {
-        // Loss day: single trade or if 2-trade day, both or net loss
         const sym = symbols[Math.floor(random() * symbols.length)];
         trades.push({
           account_id: accountId,
@@ -71,12 +105,12 @@ export function buildTradeData(accountId = 'a51e521a-2a12-42a1-bea8-840bdcb53532
           exit_price: 0,
           size: sym.startsWith('M') ? 10 : 2,
           fees: 4.5,
-          pnl: -Math.round((820 + random() * 450) / 10) * 10, // -$820 to -$1,270
+          pnl: -Math.round((820 + random() * 450) / 10) * 10,
           num_trades: 1,
-          notes: lossNotes[Math.floor(random() * lossNotes.length)]
+          notes: lossNotes[Math.floor(random() * lossNotes.length)],
         });
+
         if (isTwoTradeDay) {
-          // Additional loss trade on 12 of the 36 loss days (36 + 12 = 48 losses total!)
           const sym2 = symbols[Math.floor(random() * symbols.length)];
           trades.push({
             account_id: accountId,
@@ -89,13 +123,12 @@ export function buildTradeData(accountId = 'a51e521a-2a12-42a1-bea8-840bdcb53532
             fees: 4.5,
             pnl: -Math.round((450 + random() * 350) / 10) * 10,
             num_trades: 1,
-            notes: lossNotes[Math.floor(random() * lossNotes.length)]
+            notes: lossNotes[Math.floor(random() * lossNotes.length)],
           });
         }
       } else {
-        // Win day!
+        // Win day
         if (isTwoTradeDay) {
-          // 2 win trades
           const sym1 = symbols[Math.floor(random() * symbols.length)];
           const sym2 = symbols[Math.floor(random() * symbols.length)];
           trades.push({
@@ -109,7 +142,7 @@ export function buildTradeData(accountId = 'a51e521a-2a12-42a1-bea8-840bdcb53532
             fees: 4.5,
             pnl: Math.round((560 + random() * 480) / 10) * 10,
             num_trades: 1,
-            notes: winNotes[Math.floor(random() * winNotes.length)]
+            notes: winNotes[Math.floor(random() * winNotes.length)],
           });
           trades.push({
             account_id: accountId,
@@ -122,10 +155,9 @@ export function buildTradeData(accountId = 'a51e521a-2a12-42a1-bea8-840bdcb53532
             fees: 4.5,
             pnl: Math.round((500 + random() * 450) / 10) * 10,
             num_trades: 1,
-            notes: winNotes[Math.floor(random() * winNotes.length)]
+            notes: winNotes[Math.floor(random() * winNotes.length)],
           });
         } else {
-          // 1 win trade
           const sym = symbols[Math.floor(random() * symbols.length)];
           trades.push({
             account_id: accountId,
@@ -136,9 +168,9 @@ export function buildTradeData(accountId = 'a51e521a-2a12-42a1-bea8-840bdcb53532
             exit_price: 0,
             size: sym.startsWith('M') ? 10 : 2,
             fees: 4.5,
-            pnl: Math.round((820 + random() * 720) / 10) * 10, // +$820 to +$1,540
+            pnl: Math.round((820 + random() * 720) / 10) * 10,
             num_trades: 1,
-            notes: winNotes[Math.floor(random() * winNotes.length)]
+            notes: winNotes[Math.floor(random() * winNotes.length)],
           });
         }
       }
@@ -148,13 +180,13 @@ export function buildTradeData(accountId = 'a51e521a-2a12-42a1-bea8-840bdcb53532
     curr.setDate(curr.getDate() + 1);
   }
 
-  return { trades, totalDays: dayIndex };
+  return { trades, totalDays: dayIndex, lossCountByWeekday };
 }
 
 async function run() {
-  const { trades, totalDays } = buildTradeData();
-  const wins = trades.filter(t => t.pnl > 0);
-  const losses = trades.filter(t => t.pnl < 0);
+  const { trades, totalDays, lossCountByWeekday } = buildTradeData();
+  const wins = trades.filter((t) => t.pnl > 0);
+  const losses = trades.filter((t) => t.pnl < 0);
   const grossProfit = wins.reduce((s, t) => s + t.pnl, 0);
   const grossLoss = Math.abs(losses.reduce((s, t) => s + t.pnl, 0));
   const profitFactor = grossProfit / grossLoss;
@@ -165,10 +197,10 @@ async function run() {
   for (const t of trades) {
     dayTotals[t.date] = (dayTotals[t.date] || 0) + t.pnl;
   }
-  const winDays = Object.values(dayTotals).filter(v => v > 0).length;
+  const winDays = Object.values(dayTotals).filter((v) => v > 0).length;
   const dayWinRate = (winDays / totalDays) * 100;
 
-  console.log('Calibrated trade statistics:');
+  console.log('Mixed trade statistics:');
   console.log({
     totalDays,
     totalTrades: trades.length,
@@ -183,11 +215,12 @@ async function run() {
     grossLoss,
     totalPnL,
     startDate: trades[0].date,
-    endDate: trades[trades.length - 1].date
+    endDate: trades[trades.length - 1].date,
+    lossCountByWeekday,
   });
 
   if (process.argv.includes('--upload')) {
-    console.log('Clearing existing trades for account and uploading fresh complete calendar...');
+    console.log('Clearing existing trades for account and uploading fresh mixed complete calendar...');
     const accountId = 'a51e521a-2a12-42a1-bea8-840bdcb53532';
     const { error: delErr } = await supabase.from('trades').delete().eq('account_id', accountId);
     if (delErr) {
@@ -206,7 +239,7 @@ async function run() {
       }
       console.log(`Inserted trades ${i + 1} to ${Math.min(i + chunkSize, trades.length)} of ${trades.length}`);
     }
-    console.log('Successfully uploaded all trades to Supabase!');
+    console.log('Successfully uploaded all mixed trades to Supabase!');
   }
 }
 

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, TrendingUp, Sun, Moon, ShieldCheck, Activity } from 'lucide-react';
+import { ChevronDown, TrendingUp, Sun, Moon, ShieldCheck, Activity, Settings, BookOpen, Wallet, PlusCircle, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
 import { calcTodayPnL, calcMonthPnL, calcTotalPnL, formatCurrency } from '../../lib/calculations';
@@ -7,7 +7,9 @@ import { calcTodayPnL, calcMonthPnL, calcTotalPnL, formatCurrency } from '../../
 export default function Header() {
   const { state, selectedAccount, accountTrades, dispatch, toggleTheme } = useApp();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const settingsRef = useRef<HTMLDivElement>(null);
 
   const now = new Date();
   const monthPnL = calcMonthPnL(accountTrades, now.getFullYear(), now.getMonth());
@@ -20,6 +22,9 @@ export default function Header() {
     function handleClick(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
+      }
+      if (settingsRef.current && !settingsRef.current.contains(e.target as Node)) {
+        setSettingsOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClick);
@@ -109,15 +114,15 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Quick Metrics & Theme */}
-          <div className="flex items-center gap-4 sm:gap-8">
+          {/* Quick Metrics, Theme & Settings */}
+          <div className="flex items-center gap-3 sm:gap-6">
             {/* Account Balance */}
             <div className="text-right hidden sm:block">
               <div className="flex items-center gap-1 justify-end">
                 <ShieldCheck className="w-3 h-3 text-[#22c55e]" />
                 <p className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Account Balance</p>
               </div>
-              <p className="text-base sm:text-lg font-bold font-mono text-white">
+              <p className="text-sm sm:text-base font-bold font-mono text-white">
                 {formatCurrency(currentBalance)}
               </p>
             </div>
@@ -128,7 +133,7 @@ export default function Header() {
             <div className="text-right">
               <p className="text-[10px] text-slate-400 uppercase tracking-widest font-mono mb-0.5">Month P&L</p>
               <p
-                className={`text-sm sm:text-base font-bold font-mono ${
+                className={`text-xs sm:text-sm font-bold font-mono ${
                   monthPnL >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'
                 }`}
               >
@@ -145,12 +150,104 @@ export default function Header() {
                 <p className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Today P&L</p>
               </div>
               <p
-                className={`text-sm sm:text-base font-bold font-mono ${
+                className={`text-xs sm:text-sm font-bold font-mono ${
                   todayPnL >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'
                 }`}
               >
                 {todayPnL !== 0 ? (todayPnL > 0 ? '+' : '') + formatCurrency(todayPnL) : '$0'}
               </p>
+            </div>
+
+            {/* Quick Log Trade Button */}
+            <button
+              onClick={() => dispatch({ type: 'SET_ACTIVE_TAB', payload: 'trade-entry' })}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold font-mono transition-all ${
+                state.activeTab === 'trade-entry'
+                  ? 'bg-[#22c55e] text-black border-[#22c55e] shadow-[0_0_12px_rgba(34,197,94,0.35)]'
+                  : 'bg-[#22c55e]/10 hover:bg-[#22c55e]/20 text-[#22c55e] border-[#22c55e]/30'
+              }`}
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Log Trade</span>
+            </button>
+
+            {/* Settings Icon & Dropdown Menu */}
+            <div className="relative" ref={settingsRef}>
+              <button
+                onClick={() => setSettingsOpen((o) => !o)}
+                className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all ${
+                  settingsOpen || state.activeTab === 'accounts' || state.activeTab === 'trade-entry'
+                    ? 'bg-[#22c55e]/15 border-[#22c55e]/40 text-[#22c55e]'
+                    : 'bg-white/5 hover:bg-white/10 border-white/5 text-slate-300 hover:text-white'
+                }`}
+                title="Settings & Accounts"
+              >
+                <Settings
+                  className={`w-4 h-4 transition-transform duration-300 ${settingsOpen ? 'rotate-90' : ''}`}
+                />
+              </button>
+
+              <AnimatePresence>
+                {settingsOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full right-0 mt-2 w-64 glass-panel border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-50 p-1.5 bg-[#121217]"
+                  >
+                    <div className="px-3 py-2 text-[10px] uppercase tracking-wider text-slate-500 font-semibold font-mono border-b border-white/5 mb-1">
+                      Settings & Configurations
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        dispatch({ type: 'SET_ACTIVE_TAB', payload: 'trade-entry' });
+                        setSettingsOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2.5 rounded-xl text-xs transition-colors flex items-center gap-3 ${
+                        state.activeTab === 'trade-entry'
+                          ? 'bg-[#22c55e]/15 text-white font-semibold border border-[#22c55e]/30'
+                          : 'text-slate-300 hover:bg-white/5'
+                      }`}
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-[#22c55e]/10 border border-[#22c55e]/20 flex items-center justify-center text-[#22c55e]">
+                        <BookOpen className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-white">Trade Entry</div>
+                        <div className="text-[10px] text-slate-400">Log & manage session trades</div>
+                      </div>
+                      {state.activeTab === 'trade-entry' && (
+                        <Check className="w-3.5 h-3.5 text-[#22c55e]" />
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        dispatch({ type: 'SET_ACTIVE_TAB', payload: 'accounts' });
+                        setSettingsOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2.5 rounded-xl text-xs transition-colors flex items-center gap-3 mt-1 ${
+                        state.activeTab === 'accounts'
+                          ? 'bg-[#22c55e]/15 text-white font-semibold border border-[#22c55e]/30'
+                          : 'text-slate-300 hover:bg-white/5'
+                      }`}
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                        <Wallet className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-white">Trading Accounts</div>
+                        <div className="text-[10px] text-slate-400">Balance & drawdown limits</div>
+                      </div>
+                      {state.activeTab === 'accounts' && (
+                        <Check className="w-3.5 h-3.5 text-[#22c55e]" />
+                      )}
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Theme Toggle */}
