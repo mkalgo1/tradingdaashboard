@@ -326,36 +326,6 @@ export default function KPICards() {
           </div>
         </motion.div>
       </div>
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-400 font-mono uppercase tracking-widest">Expectancy / Trade</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-              <ShieldAlert className="w-4 h-4 text-emerald-400" />
-            </div>
-          </div>
-          <div className="my-2">
-            <span
-              className="text-2xl sm:text-3xl font-extrabold font-mono text-[#22c55e]"
-              style={{ textShadow: '0 0 20px rgba(34,197,94,0.3)' }}
-            >
-              +{formatCurrency(expectancy)}
-            </span>
-            <div className="relative h-2 bg-white/5 rounded-full overflow-hidden mt-3">
-              <div
-                className="absolute left-0 top-0 h-full rounded-full transition-all duration-500"
-                style={{
-                  width: `${Math.min(bestDayPct, 100)}%`,
-                  background: 'linear-gradient(to right, #22c55e, #10b981)',
-                  boxShadow: '0 0 8px rgba(34,197,94,0.4)',
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
-            <span>Best Day: {bestDayPct.toFixed(1)}% of total</span>
-            <span className="font-mono text-white">Streak: {streaks.currentStreak}W</span>
-          </div>
-        </motion.div>
-      </div>
     </motion.div>
   );
 }
