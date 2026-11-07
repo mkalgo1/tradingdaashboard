@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Plus, Trash2, TrendingUp, TrendingDown, Search, Filter, Sparkles, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, TrendingUp, TrendingDown, Search, Filter, Sparkles, Check, ChevronLeft, ChevronRight, Wallet, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
@@ -40,12 +40,56 @@ const PNL_PRESETS = [
 ];
 
 export default function TradeEntryTab() {
-  const { state, accountTrades, refreshTrades } = useApp();
+  const { state, accountTrades, refreshTrades, refreshAccounts, selectedAccount, dispatch } = useApp();
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [successToast, setSuccessToast] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  // New Account Modal State
+  const [showAddAccountModal, setShowAddAccountModal] = useState(false);
+  const [newAccountForm, setNewAccountForm] = useState({
+    name: '',
+    initial_balance: '50000',
+    max_drawdown: '48000',
+    profit_target: '3000',
+  });
+  const [savingAccount, setSavingAccount] = useState(false);
+  const [accountError, setAccountError] = useState('');
+
+  async function handleCreateAccount(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newAccountForm.name.trim()) {
+      setAccountError('Account name is required');
+      return;
+    }
+    setSavingAccount(true);
+    setAccountError('');
+    const { data, error: insertError } = await supabase.from('accounts').insert({
+      name: newAccountForm.name.trim(),
+      initial_balance: parseFloat(newAccountForm.initial_balance) || 50000,
+      max_drawdown: parseFloat(newAccountForm.max_drawdown) || 48000,
+      profit_target: parseFloat(newAccountForm.profit_target) || 3000,
+      commission_per_side: 0,
+    }).select().single();
+
+    if (insertError) {
+      setAccountError(insertError.message);
+      setSavingAccount(false);
+      return;
+    }
+
+    await refreshAccounts();
+    if (data) {
+      dispatch({ type: 'SET_SELECTED_ACCOUNT', payload: data.id });
+    }
+    setSavingAccount(false);
+    setShowAddAccountModal(false);
+    setNewAccountForm({ name: '', initial_balance: '50000', max_drawdown: '48000', profit_target: '3000' });
+    setSuccessToast(`Account "${data?.name}" created & selected successfully!`);
+    setTimeout(() => setSuccessToast(null), 3500);
+  }
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
@@ -158,7 +202,7 @@ export default function TradeEntryTab() {
 
       {/* Form Container */}
       <div className="bg-[#121824] rounded-2xl p-5 sm:p-6 border border-[#1e293b] shadow-xl shadow-black/30">
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
           <div>
             <h2 className="text-base font-bold text-white flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-[#10b981]" />
@@ -167,6 +211,17 @@ export default function TradeEntryTab() {
             <p className="text-xs text-slate-400 mt-0.5">
               Log new futures executions (auto-syncs to TradeZella Journal &amp; Calendar)
             </p>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => setShowAddAccountModal(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/30 text-xs font-mono font-semibold transition-all shadow-sm active:scale-95"
+            >
+              <Wallet className="w-3.5 h-3.5" />
+              <span>+ Add New Account</span>
+            </button>
           </div>
         </div>
 
@@ -508,6 +563,118 @@ export default function TradeEntryTab() {
           </div>
         )}
       </div>
+
+      {/* Add New Account Modal */}
+      <AnimatePresence>
+        {showAddAccountModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              className="w-full max-w-md rounded-2xl bg-[#121824] border border-[#1e293b] p-6 shadow-2xl relative"
+            >
+              <div className="flex items-center justify-between pb-4 border-b border-[#1e293b]">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                    <Wallet className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-white font-mono">Create New Account</h3>
+                    <p className="text-xs text-slate-400">Add a new prop firm or live trading account</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowAddAccountModal(false)}
+                  className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {accountError && (
+                <p className="mt-3 text-[#ef4444] text-xs bg-[#ef4444]/10 border border-[#ef4444]/20 rounded-xl px-3 py-2">
+                  {accountError}
+                </p>
+              )}
+
+              <form onSubmit={handleCreateAccount} className="space-y-4 mt-4">
+                <div>
+                  <label className="field-label text-slate-300">Account Name / ID *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. APEX-150K-LIVE or TOPSTEP-50K"
+                    value={newAccountForm.name}
+                    onChange={(e) => setNewAccountForm({ ...newAccountForm, name: e.target.value })}
+                    className="field-input font-mono"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="field-label text-slate-300">Initial Balance ($)</label>
+                    <input
+                      type="number"
+                      required
+                      placeholder="50000"
+                      value={newAccountForm.initial_balance}
+                      onChange={(e) =>
+                        setNewAccountForm({ ...newAccountForm, initial_balance: e.target.value })
+                      }
+                      className="field-input font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="field-label text-slate-300">Drawdown Floor ($)</label>
+                    <input
+                      type="number"
+                      required
+                      placeholder="48000"
+                      value={newAccountForm.max_drawdown}
+                      onChange={(e) =>
+                        setNewAccountForm({ ...newAccountForm, max_drawdown: e.target.value })
+                      }
+                      className="field-input font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="field-label text-slate-300">Profit Target ($)</label>
+                  <input
+                    type="number"
+                    placeholder="3000"
+                    value={newAccountForm.profit_target}
+                    onChange={(e) =>
+                      setNewAccountForm({ ...newAccountForm, profit_target: e.target.value })
+                    }
+                    className="field-input font-mono"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddAccountModal(false)}
+                    className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-mono transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={savingAccount}
+                    className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-mono font-bold shadow-lg shadow-purple-600/30 flex items-center gap-1.5 transition-all"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>{savingAccount ? 'Creating...' : 'Create Account'}</span>
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { BookOpen, ArrowLeft } from 'lucide-react';
 import { AppProvider, useApp } from './context/AppContext';
 import Header from './components/Layout/Header';
-import TabNav from './components/Layout/TabNav';
 import Dashboard from './components/Dashboard';
 import AccountsTab from './components/Accounts/AccountsTab';
 import TradeEntryTab from './components/TradeEntry/TradeEntryTab';
@@ -70,11 +69,15 @@ function AppContent() {
           <div className="absolute -bottom-40 left-1/3 w-[600px] h-[600px] rounded-full blur-[150px] bg-purple-600/4" />
         </div>
 
-        {/* Top Header: show "+" action button only on /journal */}
-        <Header showPlusButton={isJournal} />
+        {/* Top Header with Three-Dots Menu Slider & Small Grey Account Switcher */}
+        <Header
+          showPlusButton={isJournal}
+          onNavigateToJournal={() => navigateTo('/journal')}
+          onNavigateToDashboard={() => navigateTo('/')}
+        />
 
         {/* If on /journal, show dedicated top sub-bar with Back to Dashboard button */}
-        {isJournal ? (
+        {isJournal && (
           <nav className="border-b border-[#1e293b] bg-[#0b0e14]/90 backdrop-blur-md sticky top-16 z-40">
             <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between py-2.5">
@@ -98,9 +101,6 @@ function AppContent() {
               </div>
             </div>
           </nav>
-        ) : (
-          /* Clean viewing dashboard navigation (Dashboard, Payouts, Achievements) */
-          <TabNav />
         )}
 
         <main className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

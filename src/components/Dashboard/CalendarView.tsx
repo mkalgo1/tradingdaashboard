@@ -51,12 +51,33 @@ export default function CalendarView() {
     dispatch({ type: 'SET_CALENDAR', payload: { year, month: monthIndex } });
   }
 
-  function getWeekPnL(week: (number | null)[]) {
-    return week.reduce((sum, day) => {
-      if (!day) return sum;
-      const stats = dayStats[getDateStr(day)];
-      return sum + (stats?.pnl ?? 0);
-    }, 0);
+  function getWeekStats(week: (number | null)[], weekIndex: number) {
+    let pnl = 0;
+    let tradingDays = 0;
+    let tradesCount = 0;
+    let winTrades = 0;
+
+    for (const day of week) {
+      if (!day) continue;
+      const dateStr = getDateStr(day);
+      const dayTrades = accountTrades.filter((t) => t.date === dateStr);
+      if (dayTrades.length > 0) {
+        tradingDays++;
+        for (const t of dayTrades) {
+          pnl += t.pnl;
+          tradesCount += t.num_trades || 1;
+          if (t.pnl > 0) winTrades += t.num_trades || 1;
+        }
+      }
+    }
+
+    return {
+      label: `Week ${weekIndex + 1}`,
+      pnl,
+      tradingDays,
+      tradesCount,
+      winRate: tradesCount > 0 ? (winTrades / tradesCount) * 100 : 0,
+    };
   }
 
   const today = new Date();
@@ -76,7 +97,7 @@ export default function CalendarView() {
         <div className="hidden lg:block lg:w-64" />
 
         {/* Centered Month Navigator */}
-        <div className="flex items-center justify-center gap-1 bg-[#0b0e14]/80 rounded-xl p-1 border border-[#1e293b] mx-auto shadow-inner">
+        <div className="flex items-center justify-center gap-1.5 bg-[#0b0e14]/80 rounded-xl p-1 border border-[#1e293b] mx-auto shadow-inner">
           <button
             onClick={prevMonth}
             className="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center transition-colors text-slate-400 hover:text-white"
@@ -84,9 +105,27 @@ export default function CalendarView() {
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="text-sm sm:text-lg font-bold text-white px-3 sm:px-4 font-mono min-w-[150px] sm:min-w-[170px] text-center">
+
+          <button
+            onClick={() =>
+              dispatch({
+                type: 'SET_CALENDAR',
+                payload: { year: today.getFullYear(), month: today.getMonth() },
+              })
+            }
+            className={`px-2 py-1 rounded-lg text-[10px] font-bold font-mono transition-all ${
+              isCurrentMonth
+                ? 'bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/30'
+                : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            TODAY
+          </button>
+
+          <span className="text-sm sm:text-base font-bold text-white px-2 sm:px-3 font-mono min-w-[130px] sm:min-w-[150px] text-center">
             {MONTHS[calendarMonth]} <span className="text-[#10b981]">{calendarYear}</span>
           </span>
+
           <button
             onClick={nextMonth}
             className="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center transition-colors text-slate-400 hover:text-white"
@@ -229,7 +268,7 @@ export default function CalendarView() {
                             </span>
                             {numTrades !== null && numTrades > 0 && (
                               <span className="text-[10px] text-slate-400 font-mono leading-tight block mt-0.5">
-                                {numTrades}
+                                {numTrades} {numTrades === 1 ? 'trade' : 'trades'}
                               </span>
                             )}
                           </>
@@ -243,31 +282,43 @@ export default function CalendarView() {
                   );
                 })}
 
-                {/* Weekly Total Box */}
-                <div
-                  className={`h-20 rounded-xl flex flex-col items-center justify-center p-2 border transition-all ${
-                    weekPnL > 0
-                      ? 'bg-gradient-to-br from-[#10b981]/15 to-[#0b0e14]/60 border-[#10b981]/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
-                      : weekPnL < 0
-                      ? 'bg-gradient-to-br from-[#ef4444]/15 to-[#0b0e14]/60 border-[#ef4444]/30'
-                      : 'bg-[#0b0e14]/50 border-[#1e293b]'
-                  }`}
-                >
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-mono font-medium">
-                    Week Net
-                  </span>
-                  <span
-                    className={`text-xs sm:text-sm font-extrabold font-mono ${
-                      weekPnL > 0
-                        ? 'text-[#10b981]'
-                        : weekPnL < 0
-                        ? 'text-[#ef4444]'
-                        : 'text-slate-500'
-                    }`}
-                  >
-                    {weekPnL !== 0 ? (weekPnL > 0 ? '+' : '') + formatCurrency(weekPnL) : '$0'}
-                  </span>
-                </div>
+                {/* TradeZella Weekly Total Box */}
+                {(() => {
+                  const weekStats = getWeekStats(week, wi);
+                  const isPositive = weekStats.pnl > 0;
+                  const isNegative = weekStats.pnl < 0;
+                  return (
+                    <div
+                      className={`h-20 rounded-xl flex flex-col items-center justify-center p-2 border transition-all ${
+                        isPositive
+                          ? 'bg-gradient-to-br from-[#10b981]/15 to-[#0b0e14]/60 border-[#10b981]/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
+                          : isNegative
+                          ? 'bg-gradient-to-br from-[#ef4444]/15 to-[#0b0e14]/60 border-[#ef4444]/30'
+                          : 'bg-[#0b0e14]/50 border-[#1e293b]'
+                      }`}
+                    >
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5 font-mono font-medium leading-none">
+                        {weekStats.label}
+                      </span>
+                      <span
+                        className={`text-xs sm:text-sm font-extrabold font-mono leading-tight ${
+                          isPositive
+                            ? 'text-[#10b981]'
+                            : isNegative
+                            ? 'text-[#ef4444]'
+                            : 'text-slate-500'
+                        }`}
+                      >
+                        {weekStats.pnl !== 0
+                          ? (isPositive ? '+' : '') + formatCurrency(weekStats.pnl)
+                          : '$0.00'}
+                      </span>
+                      <span className="text-[9px] text-slate-500 font-mono mt-0.5 leading-none">
+                        {weekStats.tradingDays} {weekStats.tradingDays === 1 ? 'day' : 'days'}
+                      </span>
+                    </div>
+                  );
+                })()}
               </div>
             );
           })}

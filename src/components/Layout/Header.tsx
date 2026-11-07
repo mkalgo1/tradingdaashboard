@@ -12,22 +12,31 @@ import {
   Check,
   CheckCircle2,
   Trash2,
+  MoreVertical,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
 import { supabase } from '../../lib/supabase';
 import { calcTodayPnL, calcMonthPnL, calcTotalPnL, formatCurrency } from '../../lib/calculations';
 import { Payout } from '../../types';
+import SliderMenu from './SliderMenu';
 
 const today = new Date().toISOString().split('T')[0];
 
 interface HeaderProps {
   showPlusButton?: boolean;
+  onNavigateToJournal?: () => void;
+  onNavigateToDashboard?: () => void;
 }
 
-export default function Header({ showPlusButton = false }: HeaderProps) {
+export default function Header({
+  showPlusButton = false,
+  onNavigateToJournal = () => {},
+  onNavigateToDashboard = () => {},
+}: HeaderProps) {
   const { state, selectedAccount, accountTrades, accountPayouts, refreshPayouts, dispatch } = useApp();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [sliderOpen, setSliderOpen] = useState(false);
   const [plusMenuOpen, setPlusMenuOpen] = useState(false);
   const [showRequestPayoutModal, setShowRequestPayoutModal] = useState(false);
   const [showManagePayoutsModal, setShowManagePayoutsModal] = useState(false);
@@ -114,62 +123,101 @@ export default function Header({ showPlusButton = false }: HeaderProps) {
     <header className="border-b border-[#1e293b] bg-[#0b0e14]/95 backdrop-blur-xl sticky top-0 z-50">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-3">
-          {/* Top-Left: Clean Account Switcher Only (APEX logo removed per user request) */}
-          <div className="flex items-center gap-3">
+          {/* Top-Left: Three-Dots Menu Slider & Small Grey Account Switcher */}
+          <div className="flex items-center gap-2.5">
+            {/* Three-dots menu toggle button for navigation slider */}
+            <button
+              onClick={() => setSliderOpen(true)}
+              className="w-9 h-9 rounded-xl bg-[#121824] hover:bg-[#182234] border border-[#1e293b] hover:border-emerald-500/40 text-slate-400 hover:text-white flex items-center justify-center transition-all shadow-sm active:scale-95 group"
+              title="Open Navigation Menu (Dashboard, Payouts, Achievements)"
+            >
+              <div className="flex items-center justify-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 group-hover:bg-slate-200 transition-colors" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] shadow-[0_0_6px_rgba(16,185,129,0.6)]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 group-hover:bg-slate-200 transition-colors" />
+              </div>
+            </button>
+
+            {/* Account Switcher: Small, Grey text, Smooth Slide-Down */}
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen((o) => !o)}
-                className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[#121824] hover:bg-[#182234] border border-[#1e293b] transition-all group shadow-sm"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-[#121824] hover:bg-[#182234] border border-[#1e293b] hover:border-slate-600 transition-all group shadow-sm text-xs font-mono"
               >
-                <div className="w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                <span className="text-amber-400 font-bold text-sm sm:text-base tracking-wide font-mono">
-                  {selectedAccount ? selectedAccount.name : 'No Account'}
+                <div className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
+                <span className="text-slate-400 group-hover:text-slate-200 font-medium">
+                  {selectedAccount ? selectedAccount.name : 'Select Account'}
                 </span>
-                {state.accounts.length > 1 && (
-                  <ChevronDown
-                    className={`w-4 h-4 text-amber-400/70 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}
-                  />
-                )}
+                <ChevronDown
+                  className={`w-3.5 h-3.5 text-slate-500 group-hover:text-slate-300 transition-transform duration-200 ${
+                    dropdownOpen ? 'rotate-180' : ''
+                  }`}
+                />
               </button>
 
               <AnimatePresence>
-                {dropdownOpen && state.accounts.length > 1 && (
+                {dropdownOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.98 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute top-full left-0 mt-2 w-64 border border-[#1e293b] rounded-xl overflow-hidden shadow-2xl z-50 p-1.5 bg-[#121824]"
+                    className="absolute top-full left-0 mt-2 w-72 border border-[#1e293b] rounded-2xl overflow-hidden shadow-2xl z-50 p-2 bg-[#121824] backdrop-blur-xl"
                   >
-                    <div className="px-3 py-2 text-[10px] uppercase tracking-wider text-slate-500 font-semibold font-mono">
-                      Select Account
+                    <div className="px-3 py-2 text-[10px] uppercase tracking-wider text-slate-500 font-semibold font-mono flex items-center justify-between border-b border-[#1e293b] mb-1">
+                      <span>Trading Accounts</span>
+                      <span className="text-[#10b981] font-bold">{state.accounts.length} ACTIVE</span>
                     </div>
-                    {state.accounts.map((acc) => (
-                      <button
-                        key={acc.id}
-                        onClick={() => {
-                          dispatch({ type: 'SET_SELECTED_ACCOUNT', payload: acc.id });
-                          setDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-3 py-2.5 rounded-lg text-xs transition-colors flex items-center justify-between ${
-                          acc.id === state.selectedAccountId
-                            ? 'bg-[#10b981]/15 text-white font-semibold border border-[#10b981]/30'
-                            : 'text-slate-300 hover:bg-white/5'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <div
-                            className={`w-2 h-2 rounded-full ${
-                              acc.id === state.selectedAccountId ? 'bg-[#10b981]' : 'bg-slate-600'
+
+                    <div className="max-h-60 overflow-y-auto space-y-1 py-1">
+                      {state.accounts.map((acc) => {
+                        const isSelected = acc.id === state.selectedAccountId;
+                        return (
+                          <button
+                            key={acc.id}
+                            onClick={() => {
+                              dispatch({ type: 'SET_SELECTED_ACCOUNT', payload: acc.id });
+                              setDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2.5 rounded-xl text-xs transition-colors flex items-center justify-between ${
+                              isSelected
+                                ? 'bg-[#10b981]/15 text-white font-semibold border border-[#10b981]/30'
+                                : 'text-slate-300 hover:bg-white/5'
                             }`}
-                          />
-                          <span className="font-mono">{acc.name}</span>
-                        </div>
-                        <span className="text-[10px] text-slate-400 font-mono">
-                          {formatCurrency(acc.initial_balance)}
-                        </span>
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <div
+                                className={`w-2 h-2 rounded-full ${
+                                  isSelected ? 'bg-[#10b981]' : 'bg-slate-600'
+                                }`}
+                              />
+                              <div>
+                                <span className="font-mono text-xs block leading-tight">{acc.name}</span>
+                                <span className="text-[10px] text-slate-500 font-mono">
+                                  Drawdown: {formatCurrency(acc.max_drawdown)}
+                                </span>
+                              </div>
+                            </div>
+                            <span className="text-[11px] text-[#10b981] font-mono font-semibold">
+                              {formatCurrency(acc.initial_balance)}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="pt-2 border-t border-[#1e293b] mt-1">
+                      <button
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          onNavigateToJournal();
+                        }}
+                        className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 hover:text-white border border-purple-500/30 text-xs font-mono transition-colors"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>+ Add New Account</span>
                       </button>
-                    ))}
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -542,6 +590,14 @@ export default function Header({ showPlusButton = false }: HeaderProps) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Navigation Slider Drawer (Three-dots menu) */}
+      <SliderMenu
+        isOpen={sliderOpen}
+        onClose={() => setSliderOpen(false)}
+        onNavigateToJournal={onNavigateToJournal}
+        onNavigateToDashboard={onNavigateToDashboard}
+      />
     </header>
   );
 }
