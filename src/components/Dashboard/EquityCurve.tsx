@@ -9,7 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { TrendingUp, Shield, ArrowUpRight, BarChart3 } from 'lucide-react';
+import { BarChart3 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { buildEquityCurve, formatCurrency } from '../../lib/calculations';
 
@@ -87,7 +87,6 @@ export default function EquityCurve() {
   const peakBalance = points.length > 0 ? Math.max(...points.map((p) => p.balance)) : initialBalance;
   const currentDrawdownFloor = points.length > 0 ? points[points.length - 1].drawdownLine : maxDrawdown;
   const cushion = currentBalance - currentDrawdownFloor;
-  const returnPct = ((currentBalance - initialBalance) / initialBalance) * 100;
 
   const formatXAxis = (date: string) => {
     const parts = date.split('-');

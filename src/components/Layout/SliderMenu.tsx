@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -8,12 +7,8 @@ import {
   BookOpen,
   Wallet,
   Plus,
-  ShieldCheck,
-  TrendingUp,
-  Flame,
   ChevronRight,
   ExternalLink,
-  Award,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { TabType } from '../../types';

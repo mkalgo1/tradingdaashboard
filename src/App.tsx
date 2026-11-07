@@ -9,6 +9,7 @@ import TradeEntryTab from './components/TradeEntry/TradeEntryTab';
 import PayoutsTab from './components/Payouts/PayoutsTab';
 import AchievementsTab from './components/Achievements/AchievementsTab';
 import SmoothScroll from './components/ui/SmoothScroll';
+import SliderMenu from './components/Layout/SliderMenu';
 
 function checkIsJournal() {
   if (typeof window === 'undefined') return false;
@@ -27,6 +28,7 @@ function checkIsJournal() {
 function AppContent() {
   const { state, dispatch } = useApp();
   const [isJournal, setIsJournal] = useState(checkIsJournal);
+  const [sliderOpen, setSliderOpen] = useState(false);
 
   useEffect(() => {
     function handleLocation() {
@@ -72,6 +74,14 @@ function AppContent() {
         {/* Top Header with Three-Dots Menu Slider & Small Grey Account Switcher */}
         <Header
           showPlusButton={isJournal}
+          onOpenSlider={() => setSliderOpen(true)}
+          onNavigateToJournal={() => navigateTo('/journal')}
+        />
+
+        {/* Navigation Slider Drawer (Shades website behind when open) */}
+        <SliderMenu
+          isOpen={sliderOpen}
+          onClose={() => setSliderOpen(false)}
           onNavigateToJournal={() => navigateTo('/journal')}
           onNavigateToDashboard={() => navigateTo('/')}
         />
@@ -103,7 +113,11 @@ function AppContent() {
           </nav>
         )}
 
-        <main className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <main
+          className={`relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300 ${
+            sliderOpen ? 'filter brightness-50 pointer-events-none' : ''
+          }`}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={isJournal ? 'journal-view' : state.activeTab}

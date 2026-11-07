@@ -6,7 +6,6 @@ import {
   getDayStats,
   calcTotalPnL,
   calcTradeWinRate,
-  calcDayWinRate,
   calcAvgWin,
   calcAvgLoss,
   calcProfitFactor,
@@ -27,14 +26,13 @@ const containerVariants = {
   },
 };
 
-const cardVariants = {
+const cardVariants: any = {
   hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.35,
-      ease: [0.25, 0.1, 0.25, 1],
     },
   },
 };
@@ -45,7 +43,6 @@ export default function KPICards() {
   const dayStats = getDayStats(accountTrades);
   const totalPnL = calcTotalPnL(accountTrades);
   const tradeWinRate = calcTradeWinRate(accountTrades);
-  const dayWinRate = calcDayWinRate(dayStats);
   const avgWin = calcAvgWin(accountTrades);
   const avgLoss = calcAvgLoss(accountTrades);
   const profitFactor = calcProfitFactor(accountTrades);

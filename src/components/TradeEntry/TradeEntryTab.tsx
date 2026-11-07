@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Plus, Trash2, TrendingUp, TrendingDown, Search, Filter, Sparkles, Check, ChevronLeft, ChevronRight, Wallet, X } from 'lucide-react';
+import { Plus, Trash2, TrendingUp, TrendingDown, Search, Sparkles, Check, ChevronLeft, ChevronRight, Wallet, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
@@ -40,7 +40,7 @@ const PNL_PRESETS = [
 ];
 
 export default function TradeEntryTab() {
-  const { state, accountTrades, refreshTrades, refreshAccounts, selectedAccount, dispatch } = useApp();
+  const { state, accountTrades, refreshTrades, refreshAccounts, dispatch } = useApp();
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');

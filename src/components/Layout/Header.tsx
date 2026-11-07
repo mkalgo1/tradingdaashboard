@@ -10,33 +10,29 @@ import {
   Clock,
   X,
   Check,
-  CheckCircle2,
   Trash2,
-  MoreVertical,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
 import { supabase } from '../../lib/supabase';
 import { calcTodayPnL, calcMonthPnL, calcTotalPnL, formatCurrency } from '../../lib/calculations';
 import { Payout } from '../../types';
-import SliderMenu from './SliderMenu';
 
 const today = new Date().toISOString().split('T')[0];
 
 interface HeaderProps {
   showPlusButton?: boolean;
+  onOpenSlider?: () => void;
   onNavigateToJournal?: () => void;
-  onNavigateToDashboard?: () => void;
 }
 
 export default function Header({
   showPlusButton = false,
+  onOpenSlider = () => {},
   onNavigateToJournal = () => {},
-  onNavigateToDashboard = () => {},
 }: HeaderProps) {
   const { state, selectedAccount, accountTrades, accountPayouts, refreshPayouts, dispatch } = useApp();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [sliderOpen, setSliderOpen] = useState(false);
   const [plusMenuOpen, setPlusMenuOpen] = useState(false);
   const [showRequestPayoutModal, setShowRequestPayoutModal] = useState(false);
   const [showManagePayoutsModal, setShowManagePayoutsModal] = useState(false);
@@ -127,7 +123,7 @@ export default function Header({
           <div className="flex items-center gap-2.5">
             {/* Three-dots menu toggle button for navigation slider */}
             <button
-              onClick={() => setSliderOpen(true)}
+              onClick={onOpenSlider}
               className="w-9 h-9 rounded-xl bg-[#121824] hover:bg-[#182234] border border-[#1e293b] hover:border-emerald-500/40 text-slate-400 hover:text-white flex items-center justify-center transition-all shadow-sm active:scale-95 group"
               title="Open Navigation Menu (Dashboard, Payouts, Achievements)"
             >
@@ -590,14 +586,6 @@ export default function Header({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Navigation Slider Drawer (Three-dots menu) */}
-      <SliderMenu
-        isOpen={sliderOpen}
-        onClose={() => setSliderOpen(false)}
-        onNavigateToJournal={onNavigateToJournal}
-        onNavigateToDashboard={onNavigateToDashboard}
-      />
     </header>
   );
 }

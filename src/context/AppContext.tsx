@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useReducer, useCallback, useState } from 'react';
+import React, { createContext, useContext, useEffect, useReducer, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { Account, Trade, Payout, Achievement, TabType } from '../types';
 
@@ -113,25 +113,44 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    let mounted = true;
     (async () => {
-      dispatch({ type: 'SET_LOADING', payload: true });
-      const { data: accounts } = await supabase.from('accounts').select('*').order('created_at');
-      if (accounts) {
-        dispatch({ type: 'SET_ACCOUNTS', payload: accounts });
-        if (accounts.length > 0) {
-          dispatch({ type: 'SET_SELECTED_ACCOUNT', payload: accounts[0].id });
+      try {
+        dispatch({ type: 'SET_LOADING', payload: true });
+        const { data: accounts } = await supabase.from('accounts').select('*').order('created_at');
+        if (mounted && accounts) {
+          dispatch({ type: 'SET_ACCOUNTS', payload: accounts });
+          if (accounts.length > 0) {
+            dispatch({ type: 'SET_SELECTED_ACCOUNT', payload: accounts[0].id });
+          }
+        }
+        const [tradesRes, payoutsRes, achievementsRes] = await Promise.all([
+          supabase.from('trades').select('*').order('date').order('created_at'),
+          supabase.from('payouts').select('*').order('request_date', { ascending: false }),
+          supabase.from('achievements').select('*').order('date', { ascending: false }),
+        ]);
+        if (mounted) {
+          if (tradesRes.data) dispatch({ type: 'SET_TRADES', payload: tradesRes.data });
+          if (payoutsRes.data) dispatch({ type: 'SET_PAYOUTS', payload: payoutsRes.data });
+          if (achievementsRes.data) dispatch({ type: 'SET_ACHIEVEMENTS', payload: achievementsRes.data });
+        }
+      } catch (err) {
+        console.error('Failed to load initial data:', err);
+      } finally {
+        if (mounted) {
+          dispatch({ type: 'SET_LOADING', payload: false });
         }
       }
-      const [tradesRes, payoutsRes, achievementsRes] = await Promise.all([
-        supabase.from('trades').select('*').order('date').order('created_at'),
-        supabase.from('payouts').select('*').order('request_date', { ascending: false }),
-        supabase.from('achievements').select('*').order('date', { ascending: false }),
-      ]);
-      if (tradesRes.data) dispatch({ type: 'SET_TRADES', payload: tradesRes.data });
-      if (payoutsRes.data) dispatch({ type: 'SET_PAYOUTS', payload: payoutsRes.data });
-      if (achievementsRes.data) dispatch({ type: 'SET_ACHIEVEMENTS', payload: achievementsRes.data });
-      dispatch({ type: 'SET_LOADING', payload: false });
     })();
+
+    const timer = setTimeout(() => {
+      if (mounted) dispatch({ type: 'SET_LOADING', payload: false });
+    }, 4000);
+
+    return () => {
+      mounted = false;
+      clearTimeout(timer);
+    };
   }, []);
 
   const selectedAccount = state.accounts.find((a) => a.id === state.selectedAccountId) ?? null;

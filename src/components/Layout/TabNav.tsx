@@ -1,4 +1,4 @@
-import { LayoutDashboard, DollarSign, Trophy, ArrowLeft, BookOpen, Wallet } from 'lucide-react';
+import { LayoutDashboard, DollarSign, Trophy, ArrowLeft, Wallet } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
 import { TabType } from '../../types';

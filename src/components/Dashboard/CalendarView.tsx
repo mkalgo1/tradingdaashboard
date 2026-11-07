@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, X, PlusCircle, CheckCircle2, XCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
-import { getDayStats, formatCurrency, calcMonthTradeStats, parseDateParts } from '../../lib/calculations';
+import { getDayStats, formatCurrency, calcMonthTradeStats } from '../../lib/calculations';
 import { Trade } from '../../types';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -45,10 +45,6 @@ export default function CalendarView() {
   function nextMonth() {
     if (calendarMonth === 11) dispatch({ type: 'SET_CALENDAR', payload: { year: calendarYear + 1, month: 0 } });
     else dispatch({ type: 'SET_CALENDAR', payload: { year: calendarYear, month: calendarMonth + 1 } });
-  }
-
-  function jumpToMonth(monthIndex: number, year: number = 2026) {
-    dispatch({ type: 'SET_CALENDAR', payload: { year, month: monthIndex } });
   }
 
   function getWeekStats(week: (number | null)[], weekIndex: number) {
@@ -192,7 +188,9 @@ export default function CalendarView() {
 
           {/* Weeks */}
           {weeks.map((week, wi) => {
-            const weekPnL = getWeekPnL(week);
+            const weekStats = getWeekStats(week, wi);
+            const isPositive = weekStats.pnl > 0;
+            const isNegative = weekStats.pnl < 0;
             return (
               <div key={wi} className="grid grid-cols-8 gap-1.5 mb-1.5">
                 {week.map((day, di) => {
@@ -283,42 +281,35 @@ export default function CalendarView() {
                 })}
 
                 {/* TradeZella Weekly Total Box */}
-                {(() => {
-                  const weekStats = getWeekStats(week, wi);
-                  const isPositive = weekStats.pnl > 0;
-                  const isNegative = weekStats.pnl < 0;
-                  return (
-                    <div
-                      className={`h-20 rounded-xl flex flex-col items-center justify-center p-2 border transition-all ${
-                        isPositive
-                          ? 'bg-gradient-to-br from-[#10b981]/15 to-[#0b0e14]/60 border-[#10b981]/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
-                          : isNegative
-                          ? 'bg-gradient-to-br from-[#ef4444]/15 to-[#0b0e14]/60 border-[#ef4444]/30'
-                          : 'bg-[#0b0e14]/50 border-[#1e293b]'
-                      }`}
-                    >
-                      <span className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5 font-mono font-medium leading-none">
-                        {weekStats.label}
-                      </span>
-                      <span
-                        className={`text-xs sm:text-sm font-extrabold font-mono leading-tight ${
-                          isPositive
-                            ? 'text-[#10b981]'
-                            : isNegative
-                            ? 'text-[#ef4444]'
-                            : 'text-slate-500'
-                        }`}
-                      >
-                        {weekStats.pnl !== 0
-                          ? (isPositive ? '+' : '') + formatCurrency(weekStats.pnl)
-                          : '$0.00'}
-                      </span>
-                      <span className="text-[9px] text-slate-500 font-mono mt-0.5 leading-none">
-                        {weekStats.tradingDays} {weekStats.tradingDays === 1 ? 'day' : 'days'}
-                      </span>
-                    </div>
-                  );
-                })()}
+                <div
+                  className={`h-20 rounded-xl flex flex-col items-center justify-center p-2 border transition-all ${
+                    isPositive
+                      ? 'bg-gradient-to-br from-[#10b981]/15 to-[#0b0e14]/60 border-[#10b981]/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
+                      : isNegative
+                      ? 'bg-gradient-to-br from-[#ef4444]/15 to-[#0b0e14]/60 border-[#ef4444]/30'
+                      : 'bg-[#0b0e14]/50 border-[#1e293b]'
+                  }`}
+                >
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5 font-mono font-medium leading-none">
+                    {weekStats.label}
+                  </span>
+                  <span
+                    className={`text-xs sm:text-sm font-extrabold font-mono leading-tight ${
+                      isPositive
+                        ? 'text-[#10b981]'
+                        : isNegative
+                        ? 'text-[#ef4444]'
+                        : 'text-slate-500'
+                    }`}
+                  >
+                    {weekStats.pnl !== 0
+                      ? (isPositive ? '+' : '') + formatCurrency(weekStats.pnl)
+                      : '$0.00'}
+                  </span>
+                  <span className="text-[9px] text-slate-500 font-mono mt-0.5 leading-none">
+                    {weekStats.tradingDays} {weekStats.tradingDays === 1 ? 'day' : 'days'}
+                  </span>
+                </div>
               </div>
             );
           })}
