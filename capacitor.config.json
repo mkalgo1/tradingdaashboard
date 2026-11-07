@@ -1,0 +1,16 @@
+{
+  "appId": "com.tradezella.tradingdashboard",
+  "appName": "TradeZella Dashboard",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://tradingdashboard-mktradez.vercel.app",
+    "cleartext": true
+  },
+  "ios": {
+    "contentInset": "always",
+    "allowsLinkPreview": false,
+    "scrollEnabled": true,
+    "preferredContentMode": "mobile"
+  }
+}
