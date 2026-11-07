@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, X, PlusCircle, CheckCircle2, XCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, X, CheckCircle2, XCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
 import { getDayStats, formatCurrency, calcMonthTradeStats } from '../../lib/calculations';
@@ -424,17 +424,6 @@ export default function CalendarView() {
                     {formatCurrency(selectedDayTrades.trades.reduce((s, t) => s + t.pnl, 0))}
                   </span>
                 </div>
-
-                <button
-                  onClick={() => {
-                    dispatch({ type: 'SET_ACTIVE_TAB', payload: 'trade-entry' });
-                    setSelectedDayTrades(null);
-                  }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#22c55e] hover:bg-[#16a34a] text-black font-semibold text-xs transition-colors"
-                >
-                  <PlusCircle className="w-3.5 h-3.5" />
-                  <span>Log Trade</span>
-                </button>
               </div>
             </motion.div>
           </motion.div>

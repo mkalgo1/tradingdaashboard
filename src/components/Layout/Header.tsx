@@ -206,12 +206,12 @@ export default function Header({
                       <button
                         onClick={() => {
                           setDropdownOpen(false);
-                          onNavigateToJournal();
+                          dispatch({ type: 'SET_ACTIVE_TAB', payload: 'accounts' });
                         }}
                         className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 hover:text-white border border-purple-500/30 text-xs font-mono transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
-                        <span>+ Add New Account</span>
+                        <span>Manage Accounts</span>
                       </button>
                     </div>
                   </motion.div>
